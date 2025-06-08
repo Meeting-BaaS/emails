@@ -3,6 +3,12 @@ export type EmailFrequency = "Daily" | "Weekly" | "Monthly" | "Never"
 export type EmailTypeDomain = "Reports" | "Announcements" | "Developers" | "Account"
 
 export type EmailId =
+  // Legacy email types
+  | "insufficient_tokens_recording"
+  | "payment_activation"
+  | "usage_report"
+  | "welcome"
+  // New email types
   | "usage-reports"
   | "product-updates"
   | "maintenance"

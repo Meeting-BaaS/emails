@@ -1,13 +1,14 @@
 import announcementsRouter from "./announcements"
-import developerRouter from "./developer"
+import developerRouter from "./developers"
 import accountRouter from "./account"
 import { createHonoApp } from "../../lib/hono"
+import reportsRouter from "./reports"
 
 const emailRouter = createHonoApp()
 
-// Mount sub-routers
+emailRouter.route("/reports", reportsRouter)
 emailRouter.route("/announcements", announcementsRouter)
-emailRouter.route("/developer", developerRouter)
+emailRouter.route("/developers", developerRouter)
 emailRouter.route("/account", accountRouter)
 
 export default emailRouter
