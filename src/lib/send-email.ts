@@ -15,6 +15,7 @@ export const sendEmail = async ({
   subject,
   html
 }: SendEmailOptions): Promise<CreateEmailResponseSuccess> => {
+  logger.debug(`Sending email to ${to} with subject ${subject}`)
   const { data, error } = await resend.emails.send({
     from: getEnvValue("RESEND_EMAIL_FROM"),
     to,

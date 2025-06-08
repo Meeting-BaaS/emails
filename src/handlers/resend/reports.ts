@@ -2,6 +2,7 @@ import type { AppContext } from "../../types/context"
 import { sendEmail } from "../../lib/send-email"
 import { getMasterTemplate, getUnsubscribeLink } from "../../lib/utils"
 import { logger } from "../../lib/logger"
+import { logEmailSend } from "../../lib/log-email"
 import {
   COMPANY_ADDRESS,
   COMPANY_DETAILS,
@@ -14,7 +15,7 @@ import {
 export async function handleUsageReports(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -41,11 +42,24 @@ export async function handleUsageReports(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "usage-reports"
+    })
+
     return c.json({ success: true, message: "Usage report email sent", result })
   } catch (error) {
     logger.error(
       `Error sending usage report email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "usage-reports",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending usage report email" }, 500)
   }
 }

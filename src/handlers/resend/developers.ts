@@ -10,11 +10,12 @@ import {
   UNKNOWN_ERROR
 } from "../../lib/constants"
 import type { AppContext } from "../../types/context"
+import { logEmailSend } from "../../lib/log-email"
 
 export async function handleApiChanges(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -41,11 +42,24 @@ export async function handleApiChanges(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "api-changes"
+    })
+
     return c.json({ success: true, message: "API changes email sent", result })
   } catch (error) {
     logger.error(
       `Error sending API changes email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "api-changes",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending API changes email" }, 500)
   }
 }
@@ -53,7 +67,7 @@ export async function handleApiChanges(c: AppContext) {
 export async function handleDeveloperResources(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -80,11 +94,24 @@ export async function handleDeveloperResources(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "developer-resources"
+    })
+
     return c.json({ success: true, message: "Developer resources email sent", result })
   } catch (error) {
     logger.error(
       `Error sending developer resources email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "developer-resources",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending developer resources email" }, 500)
   }
 }

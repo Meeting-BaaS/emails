@@ -10,11 +10,12 @@ import {
   UNKNOWN_ERROR
 } from "../../lib/constants"
 import type { AppContext } from "../../types/context"
+import { logEmailSend } from "../../lib/log-email"
 
 export async function handleSecurityAlert(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -41,11 +42,24 @@ export async function handleSecurityAlert(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "security"
+    })
+
     return c.json({ success: true, message: "Security alert email sent", result })
   } catch (error) {
     logger.error(
       `Error sending security alert email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "security",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending security alert email" }, 500)
   }
 }
@@ -53,7 +67,7 @@ export async function handleSecurityAlert(c: AppContext) {
 export async function handleBillingNotification(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -80,11 +94,24 @@ export async function handleBillingNotification(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "billing"
+    })
+
     return c.json({ success: true, message: "Billing notification email sent", result })
   } catch (error) {
     logger.error(
       `Error sending billing notification email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "billing",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending billing notification email" }, 500)
   }
 }

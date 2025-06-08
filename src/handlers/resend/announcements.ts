@@ -10,11 +10,12 @@ import {
   SUPPORT_EMAIL,
   UNKNOWN_ERROR
 } from "../../lib/constants"
+import { logEmailSend } from "../../lib/log-email"
 
 export async function handleProductUpdates(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -41,11 +42,24 @@ export async function handleProductUpdates(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "product-updates"
+    })
+
     return c.json({ success: true, message: "Product updates email sent", result })
   } catch (error) {
     logger.error(
       `Error sending product updates email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "product-updates",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending product updates email" }, 500)
   }
 }
@@ -53,7 +67,7 @@ export async function handleProductUpdates(c: AppContext) {
 export async function handleMaintenance(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -80,11 +94,24 @@ export async function handleMaintenance(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "maintenance"
+    })
+
     return c.json({ success: true, message: "Maintenance notification email sent", result })
   } catch (error) {
     logger.error(
       `Error sending maintenance notification email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "maintenance",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending maintenance notification email" }, 500)
   }
 }
@@ -92,7 +119,7 @@ export async function handleMaintenance(c: AppContext) {
 export async function handleCompanyNews(c: AppContext) {
   const user = c.get("user")
   try {
-    const { firstname, email } = user
+    const { firstname, email, id: accountId } = user
     const template = await getMasterTemplate()
 
     const data = {
@@ -119,11 +146,24 @@ export async function handleCompanyNews(c: AppContext) {
       html
     })
 
+    await logEmailSend({
+      accountId,
+      emailType: "company-news"
+    })
+
     return c.json({ success: true, message: "Company news email sent", result })
   } catch (error) {
     logger.error(
       `Error sending company news email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
     )
+
+    await logEmailSend({
+      accountId: user.id,
+      emailType: "company-news",
+      success: false,
+      errorMessage: error instanceof Error ? error.message : UNKNOWN_ERROR
+    })
+
     return c.json({ success: false, message: "Error sending company news email" }, 500)
   }
 }
