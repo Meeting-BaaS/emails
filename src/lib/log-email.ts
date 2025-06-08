@@ -17,17 +17,20 @@ export async function logEmailSend({
   errorMessage
 }: LogEmailParams) {
   try {
+    const sentAt = new Date().toISOString()
     await db.insert(emailLogs).values({
       accountId,
       emailType,
       success,
-      errorMessage
+      errorMessage,
+      sentAt
     })
     logger.debug("Email sent", {
       accountId,
       emailType,
       success,
-      errorMessage
+      errorMessage,
+      sentAt
     })
   } catch (error) {
     // Log the error but don't throw it - we don't want email logging failures to affect the main flow
