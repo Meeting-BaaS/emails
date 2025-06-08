@@ -1,15 +1,9 @@
 import { createHonoApp } from "../../lib/hono"
+import { handleSecurityAlert, handleBillingNotification } from "../../handlers/resend/account"
 
 const accountRouter = createHonoApp()
 
-accountRouter.post("/security", async (c) => {
-  // TODO: Implement security alerts email sending
-  return c.json({ message: "Security alert email sent" })
-})
-
-accountRouter.post("/billing", async (c) => {
-  // TODO: Implement billing notifications email sending
-  return c.json({ message: "Billing notification email sent" })
-})
+accountRouter.post("/security", handleSecurityAlert)
+accountRouter.post("/billing", handleBillingNotification)
 
 export default accountRouter

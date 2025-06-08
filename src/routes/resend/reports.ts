@@ -1,10 +1,8 @@
 import { createHonoApp } from "../../lib/hono"
+import { handleUsageReports } from "../../handlers/resend/reports"
 
 const reportsRouter = createHonoApp()
 
-reportsRouter.post("/usage-reports", async (c) => {
-  // TODO: Implement usage report email sending
-  return c.json({ message: "Usage report email sent" })
-})
+reportsRouter.post("/usage-reports", handleUsageReports)
 
 export default reportsRouter
