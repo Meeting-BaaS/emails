@@ -2,6 +2,7 @@ import type { Context, Next } from "hono"
 import { getEnvValue } from "../lib/utils"
 import type { RawSessionObject, SessionObject } from "../types/session"
 import { logger } from "../lib/logger"
+import { UNKNOWN_ERROR } from "../lib/constants"
 
 /**
  * Gets the authenticated user session from the auth service
@@ -56,7 +57,7 @@ export const getAuthSession = async (c: Context, next: Next) => {
 
     await next()
   } catch (error) {
-    logger.error(`Auth session error: ${error instanceof Error ? error.stack : "Unknown error"}`)
+    logger.error(`Auth session error: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`)
     return c.json({ error: "Internal Server Error" }, 500)
   }
 }

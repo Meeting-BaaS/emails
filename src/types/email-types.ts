@@ -1,0 +1,20 @@
+export type EmailFrequency = "Daily" | "Weekly" | "Monthly" | "Never"
+
+export type EmailTypeDomain = "Reports" | "Announcements" | "Developers" | "Account"
+
+export type EmailId =
+  | "usage-reports"
+  | "product-updates"
+  | "maintenance"
+  | "company-news"
+  | "api-changes"
+  | "developer-resources"
+  | "security"
+  | "billing"
+
+export type EmailType = {
+  id: EmailId
+  name: string
+  domain: EmailTypeDomain
+  required: boolean
+}
