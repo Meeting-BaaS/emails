@@ -36,7 +36,7 @@ export const broadcastedEmailsData: Record<
   },
   "developer-resources": {
     subject: "New Developer Resources",
-    introText: "New developer resources available.",
+    introText: "Here are some new developer resources for you:",
     ctaButton: ""
   }
 }
