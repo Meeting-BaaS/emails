@@ -11,11 +11,26 @@ import {
 } from "../../lib/constants"
 import type { AppContext } from "../../types/context"
 import { logEmailSend } from "../../lib/log-email"
+import { checkCoolDown } from "../../lib/check-cooldown"
 
 export async function handleApiChanges(c: AppContext) {
   const user = c.get("user")
   try {
     const { firstname, email, id: accountId } = user
+
+    // Check cool down before proceeding
+    const coolDownResult = await checkCoolDown(accountId, "api-changes")
+    if (!coolDownResult.canSend) {
+      return c.json(
+        {
+          success: false,
+          message: "Too many requests",
+          nextAvailableAt: coolDownResult.nextAvailableAt
+        },
+        429
+      )
+    }
+
     const template = await getMasterTemplate()
 
     const data = {
@@ -68,6 +83,20 @@ export async function handleDeveloperResources(c: AppContext) {
   const user = c.get("user")
   try {
     const { firstname, email, id: accountId } = user
+
+    // Check cool down before proceeding
+    const coolDownResult = await checkCoolDown(accountId, "developer-resources")
+    if (!coolDownResult.canSend) {
+      return c.json(
+        {
+          success: false,
+          message: "Too many requests",
+          nextAvailableAt: coolDownResult.nextAvailableAt
+        },
+        429
+      )
+    }
+
     const template = await getMasterTemplate()
 
     const data = {

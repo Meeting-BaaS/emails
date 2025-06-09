@@ -3,6 +3,7 @@ import { sendEmail } from "../../lib/send-email"
 import { getMasterTemplate, getUnsubscribeLink } from "../../lib/utils"
 import { logger } from "../../lib/logger"
 import { logEmailSend } from "../../lib/log-email"
+import { checkCoolDown } from "../../lib/check-cooldown"
 import {
   COMPANY_ADDRESS,
   COMPANY_DETAILS,
@@ -16,6 +17,20 @@ export async function handleUsageReports(c: AppContext) {
   const user = c.get("user")
   try {
     const { firstname, email, id: accountId } = user
+
+    // Check cool down before proceeding
+    const coolDownResult = await checkCoolDown(accountId, "usage-reports")
+    if (!coolDownResult.canSend) {
+      return c.json(
+        {
+          success: false,
+          message: "Too many requests",
+          nextAvailableAt: coolDownResult.nextAvailableAt
+        },
+        429
+      )
+    }
+
     const template = await getMasterTemplate()
 
     const data = {

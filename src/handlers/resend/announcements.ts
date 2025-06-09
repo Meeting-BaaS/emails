@@ -11,11 +11,26 @@ import {
   UNKNOWN_ERROR
 } from "../../lib/constants"
 import { logEmailSend } from "../../lib/log-email"
+import { checkCoolDown } from "../../lib/check-cooldown"
 
 export async function handleProductUpdates(c: AppContext) {
   const user = c.get("user")
   try {
     const { firstname, email, id: accountId } = user
+
+    // Check cool down before proceeding
+    const coolDownResult = await checkCoolDown(accountId, "product-updates")
+    if (!coolDownResult.canSend) {
+      return c.json(
+        {
+          success: false,
+          message: "Too many requests",
+          nextAvailableAt: coolDownResult.nextAvailableAt
+        },
+        429
+      )
+    }
+
     const template = await getMasterTemplate()
 
     const data = {
@@ -68,6 +83,20 @@ export async function handleMaintenance(c: AppContext) {
   const user = c.get("user")
   try {
     const { firstname, email, id: accountId } = user
+
+    // Check cool down before proceeding
+    const coolDownResult = await checkCoolDown(accountId, "maintenance")
+    if (!coolDownResult.canSend) {
+      return c.json(
+        {
+          success: false,
+          message: "Too many requests",
+          nextAvailableAt: coolDownResult.nextAvailableAt
+        },
+        429
+      )
+    }
+
     const template = await getMasterTemplate()
 
     const data = {
@@ -120,6 +149,20 @@ export async function handleCompanyNews(c: AppContext) {
   const user = c.get("user")
   try {
     const { firstname, email, id: accountId } = user
+
+    // Check cool down before proceeding
+    const coolDownResult = await checkCoolDown(accountId, "company-news")
+    if (!coolDownResult.canSend) {
+      return c.json(
+        {
+          success: false,
+          message: "Too many requests",
+          nextAvailableAt: coolDownResult.nextAvailableAt
+        },
+        429
+      )
+    }
+
     const template = await getMasterTemplate()
 
     const data = {
