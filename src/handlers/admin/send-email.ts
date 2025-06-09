@@ -26,12 +26,12 @@ export const broadcastedEmailsData: Record<
   },
   "company-news": {
     subject: "Company News",
-    introText: "Latest company news and updates.",
+    introText: "Here's the latest news from our company:",
     ctaButton: ""
   },
   "api-changes": {
     subject: "API Changes Notification",
-    introText: "Important API changes coming your way.",
+    introText: "There are important API changes you should know about.",
     ctaButton: ""
   },
   "developer-resources": {
