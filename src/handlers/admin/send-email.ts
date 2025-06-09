@@ -10,7 +10,7 @@ import { sendEmail } from "../../lib/send-email"
 import { logEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
 
-const broadcastedEmailsData: Record<
+export const broadcastedEmailsData: Record<
   string,
   { subject: string; introText: string; ctaButton: string }
 > = {
