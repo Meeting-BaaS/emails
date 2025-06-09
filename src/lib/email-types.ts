@@ -11,31 +11,36 @@ export const emailTypes: EmailType[] = [
     id: "product-updates",
     name: "Product Updates",
     domain: "Announcements",
-    required: false
+    required: false,
+    broadcast: true
   },
   {
     id: "maintenance",
     name: "Maintenance Notifications",
     domain: "Announcements",
-    required: true
+    required: true,
+    broadcast: true
   },
   {
     id: "company-news",
     name: "Company News",
     domain: "Announcements",
-    required: false
+    required: false,
+    broadcast: true
   },
   {
     id: "api-changes",
     name: "API Changes",
     domain: "Developers",
-    required: false
+    required: false,
+    broadcast: true
   },
   {
     id: "developer-resources",
     name: "Developer Resources",
     domain: "Developers",
-    required: false
+    required: false,
+    broadcast: true
   },
   {
     id: "security",

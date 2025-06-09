@@ -8,6 +8,13 @@
       "when": 1749378103510,
       "tag": "0000_petite_naoko",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749464331012,
+      "tag": "0001_fresh_sersi",
+      "breakpoints": true
     }
   ]
 }

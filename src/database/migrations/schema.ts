@@ -125,6 +125,20 @@ export const emailPreferences = pgTable("email_preferences", {
 	unique("email_preferences_account_id_email_type_key").on(table.accountId, table.emailType),
 ]);
 
+export const emailContent = pgTable("email_content", {
+	id: serial().primaryKey().notNull(),
+	accountId: integer("account_id").notNull(),
+	emailType: emailType("email_type").notNull(),
+	content: varchar().notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.accountId],
+			foreignColumns: [accounts.id],
+			name: "email_content_account_id_fkey"
+		}).onDelete("cascade")
+]);
+
 export const events = pgTable("events", {
 	id: serial().primaryKey().notNull(),
 	googleId: varchar("google_id").notNull(),

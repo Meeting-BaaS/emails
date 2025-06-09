@@ -23,4 +23,5 @@ export type EmailType = {
   name: string
   domain: EmailTypeDomain
   required: boolean
+  broadcast?: boolean
 }

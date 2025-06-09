@@ -1,5 +1,5 @@
 import fs from "node:fs/promises"
-import path from "node:path"
+import path, { join } from "node:path"
 import Handlebars from "handlebars"
 import type { EmailId } from "../types/email-types"
 
@@ -12,7 +12,7 @@ export const getEnvValue = (key: string) => {
 }
 
 export async function getMasterTemplate() {
-  const templatesDir = path.join(__dirname, "../templates")
+  const templatesDir = join(process.cwd(), "public", "templates")
 
   // Load all templates
   const [masterTemplate, contentTemplate, headerTemplate, footerTemplate] = await Promise.all([
