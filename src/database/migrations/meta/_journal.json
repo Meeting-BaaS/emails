@@ -15,6 +15,20 @@
       "when": 1749464331012,
       "tag": "0001_fresh_sersi",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749473208015,
+      "tag": "0002_stiff_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1749488440729,
+      "tag": "0003_amazing_young_avengers",
+      "breakpoints": true
     }
   ]
 }

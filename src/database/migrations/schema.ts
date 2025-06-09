@@ -98,6 +98,8 @@ export const emailLogs = pgTable("email_logs", {
 	accountId: integer("account_id").notNull(),
 	emailType: emailType("email_type").notNull(),
 	sentAt: timestamp("sent_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	frequency: varchar().default('never'),
+	triggeredBy: varchar("triggered_by").default('user'),
 	metadata: jsonb(),
 	success: boolean().default(true).notNull(),
 	errorMessage: text("error_message"),
@@ -130,6 +132,7 @@ export const emailContent = pgTable("email_content", {
 	accountId: integer("account_id").notNull(),
 	emailType: emailType("email_type").notNull(),
 	content: varchar().notNull(),
+	contentText: varchar("content_text").notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 }, (table) => [
 	foreignKey({

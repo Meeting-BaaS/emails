@@ -5,6 +5,7 @@ import type { AppContext } from "../types/context"
 import { emailTypes } from "../lib/email-types"
 import { DEFAULT_FREQUENCY, UNKNOWN_ERROR } from "../lib/constants"
 import { logger } from "../lib/logger"
+import { currentDateUTC } from "../lib/utils"
 
 /**
  * Save default preferences for a user, if they don't exist.
@@ -30,10 +31,13 @@ export const saveDefaultPreferences = async (c: AppContext) => {
 
     const requiredEmailTypes = emailTypes.filter((type) => type.required)
 
+    const updatedAt = currentDateUTC()
+
     const newPreferences = requiredEmailTypes.map((type) => ({
       accountId: id,
       emailType: type.id,
-      frequency: DEFAULT_FREQUENCY
+      frequency: DEFAULT_FREQUENCY,
+      updatedAt
     }))
 
     await db.insert(emailPreferences).values(newPreferences)

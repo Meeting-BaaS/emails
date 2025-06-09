@@ -2,6 +2,7 @@ import fs from "node:fs/promises"
 import path, { join } from "node:path"
 import Handlebars from "handlebars"
 import type { EmailId } from "../types/email-types"
+import dayjs from "dayjs"
 
 export const getEnvValue = (key: string) => {
   const value = process.env[key]
@@ -9,6 +10,10 @@ export const getEnvValue = (key: string) => {
     throw new Error(`Environment variable ${key} is not set`)
   }
   return value
+}
+
+export const currentDateUTC = () => {
+  return dayjs().utc().toISOString()
 }
 
 export async function getMasterTemplate() {

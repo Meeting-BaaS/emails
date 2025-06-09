@@ -20,10 +20,6 @@ export async function getRecipients(c: AppContext) {
     // Get all matching preferences with account details
     const preferences = await db
       .select({
-        accountId: emailPreferences.accountId,
-        emailType: emailPreferences.emailType,
-        frequency: emailPreferences.frequency,
-        updatedAt: emailPreferences.updatedAt,
         email: accounts.email,
         firstname: accounts.firstname,
         lastname: accounts.lastname

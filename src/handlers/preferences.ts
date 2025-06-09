@@ -8,6 +8,7 @@ import { emailTypes } from "../lib/email-types"
 import type { EmailFrequency, EmailId } from "../types/email-types"
 import { updatePreferenceSchema, updateDomainPreferencesSchema } from "../schemas/preferences"
 import { z } from "zod"
+import { currentDateUTC } from "../lib/utils"
 
 /**
  * Get preferences for the current user
@@ -67,18 +68,21 @@ export const updatePreference = async (c: AppContext) => {
       .where(and(eq(emailPreferences.accountId, id), eq(emailPreferences.emailType, emailId)))
       .limit(1)
 
+    const updatedAt = currentDateUTC()
+
     if (existingPreference.length > 0) {
       // Update existing preference
       await db
         .update(emailPreferences)
-        .set({ frequency })
+        .set({ frequency, updatedAt })
         .where(and(eq(emailPreferences.accountId, id), eq(emailPreferences.emailType, emailId)))
     } else {
       // Create new preference
       await db.insert(emailPreferences).values({
         accountId: id,
         emailType: emailId,
-        frequency
+        frequency,
+        updatedAt
       })
     }
 
