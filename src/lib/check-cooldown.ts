@@ -1,10 +1,10 @@
 import { db } from "./db"
 import { emailLogs } from "../database/migrations/schema"
-import type { emailType } from "../database/migrations/schema"
 import { eq, and, gte } from "drizzle-orm"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import { logger } from "./logger"
+import type { EmailType } from "../types/email-types"
 
 dayjs.extend(utc)
 
@@ -14,8 +14,6 @@ interface CoolDownResult {
   remainingAttempts?: number
 }
 
-type EmailType = (typeof emailType.enumValues)[number]
-
 /**
  * Check if the account has sent too many emails in the allowed period
  * @param accountId - The account ID
@@ -24,7 +22,7 @@ type EmailType = (typeof emailType.enumValues)[number]
  */
 export async function checkCoolDown(
   accountId: number,
-  emailType: EmailType
+  emailType: EmailType["id"]
 ): Promise<CoolDownResult> {
   const allowedPeriod = Number(process.env.RESENDS_ALLOWED_PERIOD) || 24 // Default to 24 hours
   const maxAttempts = Number(process.env.NUMBER_OF_RESENDS_ALLOWED) || 3 // Default to 3 attempts

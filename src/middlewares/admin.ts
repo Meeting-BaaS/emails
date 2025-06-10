@@ -1,5 +1,4 @@
 import type { Next } from "hono"
-import { MEETING_BAAS_EMAIL_SUFFIX } from "../lib/constants"
 import { logger } from "../lib/logger"
 import type { AppContext } from "../types/context"
 
@@ -11,10 +10,11 @@ import type { AppContext } from "../types/context"
 export const adminMiddleware = async (c: AppContext, next: Next) => {
   const user = c.get("user")
   const email = user.email
+  const domain = process.env.NEXT_PUBLIC_BASE_DOMAIN || "meetingbaas.com"
 
   logger.debug(`Checking admin access for email: ${email}`)
 
-  if (!email || !email.endsWith(MEETING_BAAS_EMAIL_SUFFIX)) {
+  if (!email || !email.endsWith(`@${domain}`)) {
     logger.debug(`Unauthorized admin access attempt: ${email}`)
     return c.json({ error: "Unauthorized request" }, 401)
   }

@@ -6,11 +6,9 @@ import { UNKNOWN_ERROR } from "../../lib/constants"
 import { z } from "zod"
 import { saveContentSchema } from "../../schemas/admin"
 import sanitizeHtml from "sanitize-html"
-import type { emailType } from "../../database/migrations/schema"
 import { currentDateUTC } from "../../lib/utils"
 import { desc, eq } from "drizzle-orm"
-
-type EmailType = (typeof emailType.enumValues)[number]
+import type { EmailType } from "../../types/email-types"
 
 export async function getContents(c: AppContext) {
   try {
@@ -61,7 +59,7 @@ export async function saveContent(c: AppContext) {
 
     // Create new content
     await db.insert(emailContent).values({
-      emailType: emailType as EmailType,
+      emailType: emailType as EmailType["id"],
       content: sanitizedContent,
       contentText,
       accountId,

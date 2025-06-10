@@ -1,8 +1,4 @@
-import type { EmailFrequency } from "../types/email-types"
-
 export const UNKNOWN_ERROR = "Unknown error"
-export const DEFAULT_FREQUENCY: EmailFrequency = "Weekly"
-export const MEETING_BAAS_EMAIL_SUFFIX = "@meetingbaas.com"
 
 // Template variables
 export const PRODUCT_NAME = "Meeting BaaS"

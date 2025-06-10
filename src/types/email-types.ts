@@ -25,4 +25,5 @@ export type EmailType = {
   domain: EmailTypeDomain
   required: boolean
   broadcast?: boolean
+  defaultFrequency: EmailFrequency
 }

@@ -3,14 +3,14 @@ import { emailPreferences } from "../database/migrations/schema"
 import { db } from "../lib/db"
 import type { AppContext } from "../types/context"
 import { emailTypes } from "../lib/email-types"
-import { DEFAULT_FREQUENCY, UNKNOWN_ERROR } from "../lib/constants"
+import { UNKNOWN_ERROR } from "../lib/constants"
 import { logger } from "../lib/logger"
 import { currentDateUTC } from "../lib/utils"
 
 /**
  * Save default preferences for a user, if they don't exist.
  * This function is called when a user signs up for the first time.
- * It will save required email types with the default frequency.
+ * It will save email types with the default frequency.
  * @param c - The context object
  * @returns A JSON response with the success status and message
  */
@@ -29,14 +29,12 @@ export const saveDefaultPreferences = async (c: AppContext) => {
       return c.json({ success: true, message: "Preferences already exist" }, 200)
     }
 
-    const requiredEmailTypes = emailTypes.filter((type) => type.required)
-
     const updatedAt = currentDateUTC()
 
-    const newPreferences = requiredEmailTypes.map((type) => ({
+    const newPreferences = emailTypes.map((type) => ({
       accountId: id,
       emailType: type.id,
-      frequency: DEFAULT_FREQUENCY,
+      frequency: type.defaultFrequency,
       updatedAt
     }))
 

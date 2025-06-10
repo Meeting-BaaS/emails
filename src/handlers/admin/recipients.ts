@@ -1,15 +1,14 @@
 import type { AppContext } from "../../types/context"
 import { db } from "../../lib/db"
 import { emailPreferences, accounts } from "../../database/migrations/schema"
-import type { emailType } from "../../database/migrations/schema"
 import { eq, and } from "drizzle-orm"
 import { logger } from "../../lib/logger"
 import { UNKNOWN_ERROR } from "../../lib/constants"
 import type { z } from "zod"
 import type { getRecipientsSchema } from "../../schemas/admin"
+import type { EmailType } from "../../types/email-types"
 
 type GetRecipientsParams = z.infer<typeof getRecipientsSchema>
-type EmailType = (typeof emailType.enumValues)[number]
 
 export async function getRecipients(c: AppContext) {
   try {
@@ -28,7 +27,7 @@ export async function getRecipients(c: AppContext) {
       .innerJoin(accounts, eq(emailPreferences.accountId, accounts.id))
       .where(
         and(
-          eq(emailPreferences.emailType, emailId as EmailType),
+          eq(emailPreferences.emailType, emailId as EmailType["id"]),
           eq(emailPreferences.frequency, frequency)
         )
       )

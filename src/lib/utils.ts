@@ -3,6 +3,7 @@ import path, { join } from "node:path"
 import Handlebars from "handlebars"
 import type { EmailId } from "../types/email-types"
 import dayjs from "dayjs"
+import { SETTINGS_URL } from "./external-urls"
 
 export const getEnvValue = (key: string) => {
   const value = process.env[key]
@@ -36,6 +37,5 @@ export async function getMasterTemplate() {
 }
 
 export const getUnsubscribeLink = (email: EmailId) => {
-  const settingsUrl = process.env.SETTINGS_APP_URL || "https://settings.meetingbaas.com"
-  return `${settingsUrl}/email-preferences?unsubscribe=${email}`
+  return `${SETTINGS_URL}/email-preferences?unsubscribe=${email}`
 }
