@@ -15,3 +15,5 @@ const createUrl = (subdomain: string) => {
 
 // Settings App
 export const SETTINGS_URL = createUrl("settings")
+export const AI_CHAT_URL = createUrl("chat")
+export const LOGS_URL = createUrl("logs")

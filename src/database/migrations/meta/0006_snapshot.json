@@ -1,6 +1,6 @@
 {
-  "id": "a354a753-94d9-4bfc-9328-1f122084c672",
-  "prevId": "075f6239-79e2-477f-8730-1cd14cc7fc77",
+  "id": "c4fcc7c3-0627-4ca0-a383-775803be9590",
+  "prevId": "a354a753-94d9-4bfc-9328-1f122084c672",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -917,6 +917,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'user'"
+        },
+        "message_ids": {
+          "name": "message_ids",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "metadata": {
           "name": "metadata",

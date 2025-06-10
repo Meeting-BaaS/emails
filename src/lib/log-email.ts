@@ -11,9 +11,11 @@ interface LogEmailParams {
   errorMessage?: string
   metadata?: {
     template?: string
+    botUuid?: string
   }
   triggeredBy: string
   subject?: string
+  messageIds?: string
 }
 
 export async function logEmailSend({
@@ -23,7 +25,8 @@ export async function logEmailSend({
   errorMessage,
   metadata,
   triggeredBy,
-  subject
+  subject,
+  messageIds
 }: LogEmailParams) {
   try {
     const sentAt = currentDateUTC()
@@ -35,7 +38,8 @@ export async function logEmailSend({
       sentAt,
       metadata,
       triggeredBy,
-      subject
+      subject,
+      messageIds
     })
     logger.debug("Email sent", {
       accountId,
@@ -45,7 +49,8 @@ export async function logEmailSend({
       sentAt,
       metadata,
       triggeredBy,
-      subject
+      subject,
+      messageIds
     })
   } catch (error) {
     // Log the error but don't throw it - we don't want email logging failures to affect the main flow
@@ -55,7 +60,8 @@ export async function logEmailSend({
       emailType,
       metadata,
       triggeredBy,
-      subject
+      subject,
+      messageIds
     })
   }
 }
