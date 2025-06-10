@@ -2,7 +2,7 @@ import { pgTable, varchar, timestamp, index, foreignKey, integer, numeric, seria
 import { sql } from "drizzle-orm"
 
 export const audioFrequency = pgEnum("audio_frequency", ['f16khz', 'f24khz'])
-export const emailType = pgEnum("email_type", ['insufficient_tokens_recording', 'payment_activation', 'usage_report', 'welcome', 'usage-reports', 'product-updates', 'maintenance', 'company-news', 'api-changes', 'developer-resources', 'security', 'billing'])
+export const emailType = pgEnum("email_type", ['insufficient_tokens_recording', 'payment_activation', 'usage_report', 'welcome', 'usage-reports','bug-report', 'product-updates', 'maintenance', 'company-news', 'api-changes', 'developer-resources', 'security', 'billing'])
 export const meetingToJoin = pgEnum("meeting_to_join", ['all', 'owned', 'internal', 'external'])
 export const provider = pgEnum("provider", ['google', 'microsoft', 'apple'])
 export const recordingMode = pgEnum("recording_mode", ['audio_only', 'speaker_view', 'gallery_view'])
@@ -98,7 +98,7 @@ export const emailLogs = pgTable("email_logs", {
 	accountId: integer("account_id").notNull(),
 	emailType: emailType("email_type").notNull(),
 	sentAt: timestamp("sent_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	frequency: varchar().default('never'),
+	subject: varchar("subject"),
 	triggeredBy: varchar("triggered_by").default('user'),
 	metadata: jsonb(),
 	success: boolean().default(true).notNull(),

@@ -4,7 +4,7 @@ import type { EmailFrequency, EmailId, EmailTypeDomain } from "../types/email-ty
 
 const emailIds: EmailId[] = emailTypes.map((type) => type.id)
 const emailFrequencies: EmailFrequency[] = ["Daily", "Weekly", "Monthly", "Never"]
-const emailDomains: EmailTypeDomain[] = ["Reports", "Announcements", "Developers", "Account"]
+const emailDomains: EmailTypeDomain[] = ["reports", "announcements", "developers", "account"]
 
 export const emailFrequenciesZod = z.enum(emailFrequencies as [string, ...string[]])
 export const emailIdsZod = z.enum(emailIds as [string, ...string[]])

@@ -12,8 +12,8 @@ interface LogEmailParams {
   metadata?: {
     template?: string
   }
-  frequency?: string
-  triggeredBy?: string
+  triggeredBy: string
+  subject?: string
 }
 
 export async function logEmailSend({
@@ -22,8 +22,8 @@ export async function logEmailSend({
   success = true,
   errorMessage,
   metadata,
-  frequency,
-  triggeredBy
+  triggeredBy,
+  subject
 }: LogEmailParams) {
   try {
     const sentAt = currentDateUTC()
@@ -34,8 +34,8 @@ export async function logEmailSend({
       errorMessage,
       sentAt,
       metadata,
-      frequency,
-      triggeredBy
+      triggeredBy,
+      subject
     })
     logger.debug("Email sent", {
       accountId,
@@ -44,8 +44,8 @@ export async function logEmailSend({
       errorMessage,
       sentAt,
       metadata,
-      frequency,
-      triggeredBy
+      triggeredBy,
+      subject
     })
   } catch (error) {
     // Log the error but don't throw it - we don't want email logging failures to affect the main flow
@@ -54,8 +54,8 @@ export async function logEmailSend({
       accountId,
       emailType,
       metadata,
-      frequency,
-      triggeredBy
+      triggeredBy,
+      subject
     })
   }
 }

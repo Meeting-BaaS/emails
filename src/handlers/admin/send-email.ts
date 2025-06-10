@@ -10,33 +10,25 @@ import { sendEmail } from "../../lib/send-email"
 import { logEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
 
-export const broadcastedEmailsData: Record<
-  string,
-  { subject: string; introText: string; ctaButton: string }
-> = {
+export const broadcastedEmailsData: Record<string, { subject: string; ctaButton: string }> = {
   "product-updates": {
     subject: "Product Updates",
-    introText: "Exciting new product updates are here!",
     ctaButton: ""
   },
   maintenance: {
     subject: "Maintenance Notification",
-    introText: "Scheduled maintenance notification.",
     ctaButton: ""
   },
   "company-news": {
     subject: "Company News",
-    introText: "Here's the latest news from our company:",
     ctaButton: ""
   },
   "api-changes": {
     subject: "API Changes Notification",
-    introText: "There are important API changes you should know about.",
     ctaButton: ""
   },
   "developer-resources": {
     subject: "New Developer Resources",
-    introText: "Here are some new developer resources for you:",
     ctaButton: ""
   }
 }
@@ -45,7 +37,7 @@ export async function handleSendEmail(c: AppContext) {
   const user = c.get("user")
   try {
     const body = await c.req.json()
-    const { emailId, frequency, contentIds, recipient } = sendEmailSchema.parse(body)
+    const { emailId, frequency, contentIds, recipient, subject } = sendEmailSchema.parse(body)
     const { email: adminEmail } = user
 
     const emailData = broadcastedEmailsData[emailId]
@@ -59,7 +51,6 @@ export async function handleSendEmail(c: AppContext) {
 
     const data = {
       firstName: recipient.firstname,
-      introText: emailData.introText,
       mainContent: contentsArray.map((content) => content.content).join("<br><br>"),
       ctaButton: emailData.ctaButton,
       supportEmail: SUPPORT_EMAIL,
@@ -76,9 +67,11 @@ export async function handleSendEmail(c: AppContext) {
       firstName: "{{firstName}}"
     })
 
+    const emailSubject = subject || emailData.subject
+
     const result = await sendEmail({
       to: recipient.email,
-      subject: emailData.subject,
+      subject: emailSubject,
       html
     })
 
@@ -92,12 +85,12 @@ export async function handleSendEmail(c: AppContext) {
     await logEmailSend({
       accountId: recipientAccount.id,
       emailType: emailId as EmailType["id"],
-      frequency,
+      subject: emailSubject,
       triggeredBy: adminEmail,
       metadata: { template: htmlWithoutName }
     })
 
-    return c.json({ success: true, message: `${emailData.subject} email sent`, result })
+    return c.json({ success: true, message: `${emailSubject} email sent`, result })
   } catch (error) {
     logger.error(`Error sending email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`)
     return c.json({ success: false, message: "Error sending email" }, 500)

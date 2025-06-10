@@ -29,6 +29,20 @@
       "when": 1749488440729,
       "tag": "0003_amazing_young_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1749552384663,
+      "tag": "0004_mighty_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1749554440864,
+      "tag": "0005_ordinary_mantis",
+      "breakpoints": true
     }
   ]
 }

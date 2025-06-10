@@ -1,6 +1,6 @@
 export type EmailFrequency = "Daily" | "Weekly" | "Monthly" | "Never"
 
-export type EmailTypeDomain = "Reports" | "Announcements" | "Developers" | "Account"
+export type EmailTypeDomain = "reports" | "announcements" | "developers" | "account"
 
 export type EmailId =
   // Legacy email types
@@ -10,6 +10,7 @@ export type EmailId =
   | "welcome"
   // New email types
   | "usage-reports"
+  | "bug-report"
   | "product-updates"
   | "maintenance"
   | "company-news"

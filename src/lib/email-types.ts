@@ -4,54 +4,54 @@ export const emailTypes: EmailType[] = [
   {
     id: "usage-reports",
     name: "Usage Reports",
-    domain: "Reports",
+    domain: "reports",
     required: false
   },
   {
     id: "product-updates",
     name: "Product Updates",
-    domain: "Announcements",
+    domain: "announcements",
     required: false,
     broadcast: true
   },
   {
     id: "maintenance",
     name: "Maintenance Notifications",
-    domain: "Announcements",
+    domain: "announcements",
     required: true,
     broadcast: true
   },
   {
     id: "company-news",
     name: "Company News",
-    domain: "Announcements",
+    domain: "announcements",
     required: false,
     broadcast: true
   },
   {
     id: "api-changes",
     name: "API Changes",
-    domain: "Developers",
+    domain: "developers",
     required: false,
     broadcast: true
   },
   {
     id: "developer-resources",
     name: "Developer Resources",
-    domain: "Developers",
+    domain: "developers",
     required: false,
     broadcast: true
   },
   {
     id: "security",
     name: "Security Alerts",
-    domain: "Account",
+    domain: "account",
     required: true
   },
   {
     id: "billing",
     name: "Billing Notifications",
-    domain: "Account",
+    domain: "account",
     required: true
   }
 ]

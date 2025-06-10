@@ -67,6 +67,7 @@ export async function handleResend(c: AppContext) {
     }
 
     const latestEmailContent = (latestEmail[0].metadata as EmailMetadata)?.template
+    const latestEmailSubject = latestEmail[0].subject
 
     if (!latestEmailContent) {
       return c.json({ success: false, message: "No email content found" }, 422)
@@ -79,10 +80,11 @@ export async function handleResend(c: AppContext) {
     }
 
     const html = template(data)
+    const subject = latestEmailSubject || broadcastedEmailsData[emailId as EmailType["id"]].subject
 
     const result = await sendEmail({
       to: email,
-      subject: broadcastedEmailsData[emailId as EmailType["id"]].subject,
+      subject,
       html
     })
     logger.debug(`Email sent successfully to ${email}`)
@@ -90,14 +92,14 @@ export async function handleResend(c: AppContext) {
     await logEmailSend({
       accountId,
       emailType: emailId as EmailType["id"],
-      frequency,
       triggeredBy: "user",
+      subject,
       metadata: { template: latestEmailContent }
     })
 
     return c.json({
       success: true,
-      message: `${broadcastedEmailsData[emailId as EmailType["id"]].subject} email sent`,
+      message: `${subject} email sent`,
       result
     })
   } catch (error) {
