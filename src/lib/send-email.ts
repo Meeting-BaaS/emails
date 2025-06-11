@@ -106,8 +106,6 @@ export const sendErrorReportReplyEmail = async ({
     }
   })
 
-  console.log(messageId, references)
-
   if (error) {
     logger.error(`Error sending error report reply email: ${error.message}`)
     throw new Error(error.message)
