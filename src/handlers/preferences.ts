@@ -28,7 +28,7 @@ export const getPreferences = async (c: AppContext) => {
     // Create an object with all email types, defaulting to "never" frequency
     const formattedPreferences = emailTypes.reduce(
       (acc, type) => {
-        acc[type.id] = "Never"
+        acc[type.id] = type.defaultFrequency ?? "Never"
         return acc
       },
       {} as Record<EmailId, EmailFrequency>
@@ -62,6 +62,15 @@ export const updatePreference = async (c: AppContext) => {
     const emailId = c.req.param("emailId") as EmailId
     const body = await c.req.json()
     const { frequency } = updatePreferenceSchema.parse(body)
+
+    const isRequired = emailTypes.find((t) => t.id === emailId)?.required
+    if (isRequired && frequency === "Never") {
+      logger.error(`User ${id} tried to disable a required email type: ${emailId}`)
+      return c.json(
+        { success: false, message: "This email type is mandatory and cannot be disabled" },
+        400
+      )
+    }
 
     // Check if preference exists
     const existingPreference = await db
@@ -136,10 +145,7 @@ export const updateDomainPreferences = async (c: AppContext) => {
     const updatedAt = currentDateUTC()
 
     // Prepare arrays for bulk operations
-    const toUpdate = existingPreferences.map((pref) => ({
-      ...pref,
-      frequency
-    }))
+    const toUpdateCount = existingPreferences.length
 
     const toInsert = domainEmailTypes
       .filter((emailType) => !existingEmailTypes.has(emailType))
@@ -151,7 +157,7 @@ export const updateDomainPreferences = async (c: AppContext) => {
       }))
 
     // Perform bulk operations
-    if (toUpdate.length > 0) {
+    if (toUpdateCount > 0) {
       await db
         .update(emailPreferences)
         .set({ frequency, updatedAt })
@@ -171,7 +177,7 @@ export const updateDomainPreferences = async (c: AppContext) => {
       {
         success: true,
         message: "Domain preferences updated successfully",
-        updated: toUpdate.length,
+        updated: toUpdateCount,
         created: toInsert.length
       },
       201

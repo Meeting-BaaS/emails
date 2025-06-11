@@ -123,7 +123,7 @@ export async function handleErrorReportReply(c: AppContext) {
       resolved,
       reply,
       year: new Date().getFullYear(),
-      logLink: `${LOGS_URL}?bot_uuid=${botUuid}` // Logs URL expects botUuid
+      logLink: `${LOGS_URL}?bot_uuid=${botUuid}` // Logs URL expects bot_uuid
     }
 
     const template = await getErrorReportReplyTemplate()

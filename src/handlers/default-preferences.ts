@@ -21,12 +21,13 @@ export const saveDefaultPreferences = async (c: Context) => {
     const body = await c.req.json()
     const { accountId } = saveDefaultPreferencesSchema.parse(body)
 
-    const currentPreferences = await db
-      .select()
+    const exists = await db
+      .select({ id: emailPreferences.id })
       .from(emailPreferences)
       .where(eq(emailPreferences.accountId, accountId))
+      .limit(1)
 
-    if (currentPreferences.length > 0) {
+    if (exists.length > 0) {
       logger.debug(`Preferences already exist for user: ${accountId}`)
       return c.json({ success: true, message: "Preferences already exist" }, 200)
     }
