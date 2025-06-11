@@ -39,9 +39,8 @@ export async function checkCoolDown(
         and(
           eq(emailLogs.accountId, accountId),
           eq(emailLogs.emailType, emailType),
-          eq(emailLogs.triggeredBy, "user"),
-          eq(emailLogs.success, true),
-          gte(emailLogs.sentAt, startTimestamp)
+          gte(emailLogs.sentAt, startTimestamp),
+          eq(emailLogs.triggeredBy, "user")
         )
       )
       .orderBy(emailLogs.sentAt)

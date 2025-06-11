@@ -10,7 +10,7 @@
     "start": "node -r dotenv/config dist/src/server.js",
     "db:introspect": "drizzle-kit introspect",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
+    "db:push": "drizzle-kit push --verbose",
     "db:studio": "drizzle-kit studio"
   },
   "author": "Meeting BaaS",

@@ -10,6 +10,7 @@ export type EmailId =
   | "welcome"
   // New email types
   | "usage-reports"
+  | "activity-updates"
   | "error-report"
   | "product-updates"
   | "maintenance"
@@ -18,6 +19,7 @@ export type EmailId =
   | "developer-resources"
   | "security"
   | "billing"
+  | "custom"
 
 export type EmailType = {
   id: EmailId

@@ -6,4 +6,6 @@ CREATE TABLE "email_content" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE INDEX "email_content_account_id_idx" ON "email_content" ("account_id");
+--> statement-breakpoint
 ALTER TABLE "email_content" ADD CONSTRAINT "email_content_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE cascade ON UPDATE no action;

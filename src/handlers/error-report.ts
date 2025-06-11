@@ -1,6 +1,6 @@
 import type { AppContext } from "../types/context"
 import { logger } from "../lib/logger"
-import { sendErrorReportReplyEmail, sendNewErrorReportEmail } from "../lib/send-email"
+import { sendErrorReportEmail } from "../lib/send-email"
 import { logEmailSend } from "../lib/log-email"
 import { ERROR_REPORT_SUBJECT, UNKNOWN_ERROR } from "../lib/constants"
 import {
@@ -39,7 +39,7 @@ export async function handleNewErrorReport(c: AppContext) {
 
     const subject = `${ERROR_REPORT_SUBJECT} - Bot ${botUuid}`
 
-    const result = await sendNewErrorReportEmail({
+    const result = await sendErrorReportEmail({
       to: email,
       subject,
       html,
@@ -126,7 +126,7 @@ export async function handleErrorReportReply(c: AppContext) {
     const html = template(templateData)
     const subject = `Re: ${ERROR_REPORT_SUBJECT} - Bot ${botUuid}`
 
-    const result = await sendErrorReportReplyEmail({
+    const result = await sendErrorReportEmail({
       to: accountEmail,
       subject,
       html,

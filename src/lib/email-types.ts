@@ -9,6 +9,14 @@ export const emailTypes: EmailType[] = [
     defaultFrequency: "Weekly"
   },
   {
+    id: "activity-updates",
+    name: "Activity Updates",
+    domain: "reports",
+    required: false,
+    broadcast: true,
+    defaultFrequency: "Weekly"
+  },
+  {
     id: "product-updates",
     name: "Product Updates",
     domain: "announcements",
