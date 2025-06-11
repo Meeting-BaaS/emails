@@ -2,7 +2,7 @@ import type { AppContext } from "../types/context"
 import { logger } from "../lib/logger"
 import { sendErrorReportEmail } from "../lib/send-email"
 import { logEmailSend } from "../lib/log-email"
-import { ERROR_REPORT_SUBJECT, UNKNOWN_ERROR } from "../lib/constants"
+import { ERROR_REPORT_SUBJECT, SUPPORT_EMAIL, UNKNOWN_ERROR } from "../lib/constants"
 import {
   generateErrorReportReplyMessageId,
   generateNewErrorReportMessageId,
@@ -43,7 +43,8 @@ export async function handleNewErrorReport(c: AppContext) {
       to: email,
       subject,
       html,
-      messageId
+      messageId,
+      cc: SUPPORT_EMAIL
     })
 
     await logEmailSend({
@@ -131,7 +132,8 @@ export async function handleErrorReportReply(c: AppContext) {
       subject,
       html,
       messageId: currentMessageId,
-      references: messageIds
+      references: messageIds,
+      cc: SUPPORT_EMAIL
     })
 
     const newMessageIds = [...messageIds, currentMessageId]
