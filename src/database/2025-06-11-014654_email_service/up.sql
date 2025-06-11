@@ -1,10 +1,29 @@
 -- These statements are a copy of the database/migrations created by Drizzle ORM. These are not run by the app.
 
+-- Create a new enum type with all values
+CREATE TYPE "email_type_new" AS ENUM (
+	'insufficient_tokens_recording',
+	'payment_activation',
+	'usage_report',
+	'welcome',
+	'usage-reports',
+	'error-report',
+	'product-updates',
+	'maintenance',
+	'company-news',
+	'api-changes',
+	'developer-resources',
+	'security',
+	'billing',
+	'activity-updates',
+	'custom'
+);
+
 -- Create email preferences table
 CREATE TABLE "email_preferences" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"account_id" integer NOT NULL,
-	"email_type" "email_type" NOT NULL,
+	"email_type" "email_type_new" NOT NULL,
 	"frequency" varchar DEFAULT 'never' NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "email_preferences_account_id_email_type_key" UNIQUE("account_id","email_type")
@@ -20,7 +39,7 @@ CREATE INDEX "email_preferences_account_id_email_type_idx" ON "email_preferences
 CREATE TABLE "email_content" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"account_id" integer NOT NULL,
-	"email_type" "email_type" NOT NULL,
+	"email_type" "email_type_new" NOT NULL,
 	"content" varchar NOT NULL,
     "content_text" varchar NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
@@ -37,18 +56,14 @@ ALTER TABLE "email_logs" ADD COLUMN "subject" varchar;
 ALTER TABLE "email_logs" ADD COLUMN "triggered_by" varchar DEFAULT 'system';
 ALTER TABLE "email_logs" ADD COLUMN "message_ids" varchar;
 
--- Add new email types
-ALTER TYPE "public"."email_type" ADD VALUE 'usage-reports';
-ALTER TYPE "public"."email_type" ADD VALUE 'error-report';
-ALTER TYPE "public"."email_type" ADD VALUE 'product-updates';
-ALTER TYPE "public"."email_type" ADD VALUE 'maintenance';
-ALTER TYPE "public"."email_type" ADD VALUE 'company-news';
-ALTER TYPE "public"."email_type" ADD VALUE 'api-changes';
-ALTER TYPE "public"."email_type" ADD VALUE 'developer-resources';
-ALTER TYPE "public"."email_type" ADD VALUE 'security';
-ALTER TYPE "public"."email_type" ADD VALUE 'billing';
-ALTER TYPE "public"."email_type" ADD VALUE 'activity-updates';
-ALTER TYPE "public"."email_type" ADD VALUE 'custom';
+-- Convert existing email_logs to use new type
+ALTER TABLE "email_logs" 
+	ALTER COLUMN "email_type" TYPE "email_type_new" 
+	USING "email_type"::text::"email_type_new";
+
+-- Drop the old type and rename the new one
+DROP TYPE "email_type";
+ALTER TYPE "email_type_new" RENAME TO "email_type";
 
 -- Data fix: Insert default email preferences for all existing users
 WITH email_types AS (
