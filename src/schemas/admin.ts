@@ -3,7 +3,9 @@ import { emailIdsZod, emailFrequenciesZod } from "./preferences"
 
 export const getRecipientsSchema = z.object({
   emailId: emailIdsZod,
-  frequency: emailFrequenciesZod
+  frequency: emailFrequenciesZod,
+  botCountLessThan: z.string().optional(),
+  lastBotMoreThanDays: z.string().optional()
 })
 
 export const saveContentSchema = z.object({
