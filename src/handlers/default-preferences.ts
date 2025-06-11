@@ -1,38 +1,39 @@
 import { eq } from "drizzle-orm"
 import { emailPreferences } from "../database/migrations/schema"
 import { db } from "../lib/db"
-import type { AppContext } from "../types/context"
 import { emailTypes } from "../lib/email-types"
 import { UNKNOWN_ERROR } from "../lib/constants"
 import { logger } from "../lib/logger"
 import { currentDateUTC } from "../lib/utils"
+import type { Context } from "hono"
+import { saveDefaultPreferencesSchema } from "../schemas/account"
 
 /**
  * Save default preferences for a user, if they don't exist.
- * This function is called when a user signs up for the first time.
+ * This function is called when a user signs up/logs in
  * It will save email types with the default frequency.
  * @param c - The context object
  * @returns A JSON response with the success status and message
  */
-export const saveDefaultPreferences = async (c: AppContext) => {
-  const user = c.get("user")
+export const saveDefaultPreferences = async (c: Context) => {
   try {
-    const { id } = user
+    const body = await c.req.json()
+    const { accountId } = saveDefaultPreferencesSchema.parse(body)
 
     const currentPreferences = await db
       .select()
       .from(emailPreferences)
-      .where(eq(emailPreferences.accountId, id))
+      .where(eq(emailPreferences.accountId, accountId))
 
     if (currentPreferences.length > 0) {
-      logger.debug(`Preferences already exist for user: ${id}`)
+      logger.debug(`Preferences already exist for user: ${accountId}`)
       return c.json({ success: true, message: "Preferences already exist" }, 200)
     }
 
     const updatedAt = currentDateUTC()
 
     const newPreferences = emailTypes.map((type) => ({
-      accountId: id,
+      accountId,
       emailType: type.id,
       frequency: type.defaultFrequency,
       updatedAt
