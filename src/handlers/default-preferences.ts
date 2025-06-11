@@ -7,6 +7,7 @@ import { logger } from "../lib/logger"
 import { currentDateUTC } from "../lib/utils"
 import type { Context } from "hono"
 import { saveDefaultPreferencesSchema } from "../schemas/account"
+import { z } from "zod"
 
 /**
  * Save default preferences for a user, if they don't exist.
@@ -39,12 +40,15 @@ export const saveDefaultPreferences = async (c: Context) => {
       updatedAt
     }))
 
-    await db.insert(emailPreferences).values(newPreferences)
+    await db.insert(emailPreferences).values(newPreferences).onConflictDoNothing()
 
     return c.json({ success: true, message: "Preferences saved successfully" }, 201)
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
+    }
     logger.error(
-      `Error saving preferences: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error saving preferences: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
     return c.json({ success: false, message: "Error saving preferences" }, 500)
   }

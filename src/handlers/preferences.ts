@@ -36,13 +36,15 @@ export const getPreferences = async (c: AppContext) => {
 
     // Update with actual preferences from database
     for (const pref of preferences) {
-      formattedPreferences[pref.emailType] = pref.frequency as EmailFrequency
+      if (pref.emailType in formattedPreferences) {
+        formattedPreferences[pref.emailType] = pref.frequency as EmailFrequency
+      }
     }
 
     return c.json({ success: true, preferences: formattedPreferences }, 200)
   } catch (error) {
     logger.error(
-      `Error getting preferences: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error getting preferences: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
     return c.json({ success: false, message: "Error getting preferences" }, 500)
   }
@@ -92,7 +94,7 @@ export const updatePreference = async (c: AppContext) => {
       return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
     }
     logger.error(
-      `Error updating preference: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error updating preference: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
     return c.json({ success: false, message: "Error updating preference" }, 500)
   }
@@ -131,6 +133,8 @@ export const updateDomainPreferences = async (c: AppContext) => {
     // Create a set of existing email types for quick lookup
     const existingEmailTypes = new Set(existingPreferences.map((p) => p.emailType))
 
+    const updatedAt = currentDateUTC()
+
     // Prepare arrays for bulk operations
     const toUpdate = existingPreferences.map((pref) => ({
       ...pref,
@@ -142,14 +146,15 @@ export const updateDomainPreferences = async (c: AppContext) => {
       .map((emailType) => ({
         accountId: id,
         emailType,
-        frequency
+        frequency,
+        updatedAt
       }))
 
     // Perform bulk operations
     if (toUpdate.length > 0) {
       await db
         .update(emailPreferences)
-        .set({ frequency })
+        .set({ frequency, updatedAt })
         .where(
           and(
             eq(emailPreferences.accountId, id),
@@ -176,7 +181,7 @@ export const updateDomainPreferences = async (c: AppContext) => {
       return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
     }
     logger.error(
-      `Error updating domain preferences: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error updating domain preferences: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
     return c.json({ success: false, message: "Error updating domain preferences" }, 500)
   }

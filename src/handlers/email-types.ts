@@ -7,5 +7,5 @@ import { emailTypes } from "../lib/email-types"
  * @returns A JSON response with the success status and data
  */
 export const getTypes = (c: AppContext) => {
-  return c.json({ success: true, data: emailTypes }, 200)
+  return c.json({ success: true, data: emailTypes })
 }

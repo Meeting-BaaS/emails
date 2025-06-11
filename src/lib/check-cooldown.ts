@@ -66,7 +66,7 @@ export async function checkCoolDown(
     // If there's an error checking cool down, allow the request to proceed
     // but log the error for monitoring
     logger.error(
-      `Error checking email cool down: ${error instanceof Error ? error.stack : "Unknown error"}`
+      `Error checking email cool down: ${error instanceof Error ? error.stack || error.message : "Unknown error"}`
     )
     return { canSend: true }
   }

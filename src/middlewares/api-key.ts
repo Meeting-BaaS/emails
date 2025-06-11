@@ -3,6 +3,8 @@ import { logger } from "../lib/logger"
 import type { AppContext } from "../types/context"
 import { getEnvValue } from "../lib/utils"
 
+const API_KEY = getEnvValue("EMAIL_SERVICE_API_KEY")
+
 /**
  * Middleware to check if the api key is valid
  * This middleware protects account routes as they are called from the backend server, not users
@@ -13,16 +15,14 @@ export const apiKeyMiddleware = async (c: AppContext, next: Next) => {
   const requestApiKey = c.req.header("x-api-key")
   const authHeader = c.req.header("Authorization")
 
-  const apiKey = getEnvValue("EMAIL_SERVICE_API_KEY")
+  logger.debug("Checking api key")
 
-  logger.debug(`Checking api key: ${apiKey}`)
-
-  if (requestApiKey && requestApiKey === apiKey) {
+  if (requestApiKey && requestApiKey === API_KEY) {
     logger.debug("API key access granted using x-api-key")
     return next()
   }
 
-  if (authHeader && authHeader === `Bearer ${apiKey}`) {
+  if (authHeader && authHeader === `Bearer ${API_KEY}`) {
     logger.debug("API key access granted using Authorization header")
     return next()
   }

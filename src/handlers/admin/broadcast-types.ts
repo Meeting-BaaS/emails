@@ -8,5 +8,5 @@ import { emailTypes } from "../../lib/email-types"
  */
 export const getBroadcastTypes = (c: AppContext) => {
   const broadcastTypes = emailTypes.filter((type) => type.broadcast)
-  return c.json({ success: true, data: broadcastTypes }, 200)
+  return c.json({ success: true, data: broadcastTypes })
 }

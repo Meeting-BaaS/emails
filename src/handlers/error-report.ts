@@ -14,6 +14,7 @@ import { errorReportReplySchema, newErrorReportSchema } from "../schemas/error-r
 import { db } from "../lib/db"
 import { accounts, emailLogs } from "../database/migrations/schema"
 import { and, desc, eq, sql } from "drizzle-orm"
+import { z } from "zod"
 
 export async function handleNewErrorReport(c: AppContext) {
   const user = c.get("user")
@@ -29,7 +30,7 @@ export async function handleNewErrorReport(c: AppContext) {
       additionalContext,
       year: new Date().getFullYear(),
       chatLink: `${AI_CHAT_URL}/chat/${chatId}`,
-      logLink: `${LOGS_URL}?bot_uuid=${botUuid}`
+      logLink: `${LOGS_URL}?bot_uuid=${botUuid}` // Logs URL expects bot_uuid
     }
 
     const template = await getErrorReportTemplate()
@@ -62,8 +63,11 @@ export async function handleNewErrorReport(c: AppContext) {
       result
     })
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
+    }
     logger.error(
-      `Error processing error report: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error processing error report: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
     logger.debug(`Error details: ${JSON.stringify(error)}`)
 
@@ -119,7 +123,7 @@ export async function handleErrorReportReply(c: AppContext) {
       resolved,
       reply,
       year: new Date().getFullYear(),
-      logLink: `${LOGS_URL}?botUuid=${botUuid}`
+      logLink: `${LOGS_URL}?bot_uuid=${botUuid}` // Logs URL expects botUuid
     }
 
     const template = await getErrorReportReplyTemplate()
@@ -153,8 +157,11 @@ export async function handleErrorReportReply(c: AppContext) {
       result
     })
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
+    }
     logger.error(
-      `Error processing error report reply: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error processing error report reply: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
     logger.debug(`Error details: ${JSON.stringify(error)}`)
 

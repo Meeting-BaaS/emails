@@ -11,6 +11,7 @@ import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 
 dayjs.extend(utc)
+const EPOCH_DATE = "1970-01-01"
 
 type GetRecipientsParams = z.infer<typeof getRecipientsSchema>
 
@@ -40,7 +41,7 @@ export async function getRecipients(c: AppContext) {
     const botCount = botCountLessThan && Number.parseInt(botCountLessThan.split(" ")[0])
 
     // Add bot count subquery if botCountLessThan is provided. 0 is a valid value.
-    if (botCount !== undefined) {
+    if (botCount !== undefined && !Number.isNaN(botCount)) {
       const botCountSubquery = db
         .select({
           accountId: bots.accountId,
@@ -91,7 +92,7 @@ export async function getRecipients(c: AppContext) {
 
     if (days && daysAgo) {
       conditions.push(
-        sql`COALESCE(last_bot_dates.last_bot_date, '1970-01-01'::timestamp) < ${daysAgo}`
+        sql`COALESCE(last_bot_dates.last_bot_date, '${EPOCH_DATE}'::timestamp) < ${daysAgo}`
       )
     }
 
@@ -106,7 +107,7 @@ export async function getRecipients(c: AppContext) {
     })
   } catch (error) {
     logger.error(
-      `Error fetching recipients: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error fetching recipients: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
 
     return c.json(

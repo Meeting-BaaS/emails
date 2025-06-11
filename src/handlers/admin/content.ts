@@ -31,7 +31,9 @@ export async function getContents(c: AppContext) {
       data: contents
     })
   } catch (error) {
-    logger.error(`Error fetching contents: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`)
+    logger.error(
+      `Error fetching contents: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
+    )
 
     return c.json(
       {
@@ -54,6 +56,17 @@ export async function saveContent(c: AppContext) {
 
     // Sanitize the HTML content
     const sanitizedContent = sanitizeHtml(content)
+
+    if (!sanitizedContent.trim()) {
+      logger.error("Content cannot be empty after sanitisation")
+      return c.json(
+        {
+          success: false,
+          message: "Content cannot be empty after sanitisation"
+        },
+        400
+      )
+    }
 
     const createdAt = currentDateUTC()
 
@@ -89,7 +102,7 @@ export async function saveContent(c: AppContext) {
     }
 
     logger.error(
-      `Error saving email content: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`
+      `Error saving email content: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
     )
 
     return c.json(

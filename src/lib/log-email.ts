@@ -1,12 +1,12 @@
 import { db } from "./db"
 import { emailLogs } from "../database/migrations/schema"
-import type { emailType } from "../database/migrations/schema"
 import { logger } from "./logger"
 import { currentDateUTC } from "./utils"
+import type { EmailType } from "../types/email-types"
 
 interface LogEmailParams {
   accountId: number
-  emailType: (typeof emailType.enumValues)[number]
+  emailType: EmailType["id"]
   success?: boolean
   errorMessage?: string
   metadata?: {

@@ -15,8 +15,8 @@ export const adminMiddleware = async (c: AppContext, next: Next) => {
   logger.debug(`Checking admin access for email: ${email}`)
 
   if (!email || !email.endsWith(`@${domain}`)) {
-    logger.debug(`Unauthorized admin access attempt: ${email}`)
-    return c.json({ error: "Unauthorized request" }, 401)
+    logger.debug(`Forbidden admin access attempt: ${email}`)
+    return c.json({ error: "Forbidden" }, 403)
   }
 
   logger.debug(`Admin access granted for: ${email}`)

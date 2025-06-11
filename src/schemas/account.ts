@@ -1,5 +1,5 @@
 import { z } from "zod"
 
 export const saveDefaultPreferencesSchema = z.object({
-  accountId: z.number()
+  accountId: z.number().int().positive()
 })

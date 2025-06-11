@@ -57,7 +57,9 @@ export const getAuthSession = async (c: Context, next: Next) => {
 
     await next()
   } catch (error) {
-    logger.error(`Auth session error: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`)
+    logger.error(
+      `Auth session error: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
+    )
     return c.json({ error: "Internal Server Error" }, 500)
   }
 }

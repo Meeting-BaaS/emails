@@ -9,6 +9,7 @@ import { getMasterTemplate, getUnsubscribeLink } from "../../lib/utils"
 import { sendEmail } from "../../lib/send-email"
 import { logEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
+import { z } from "zod"
 
 export const broadcastedEmailsData: Record<string, { subject: string; ctaButton: string }> = {
   "product-updates": {
@@ -37,7 +38,7 @@ export async function handleSendEmail(c: AppContext) {
   const user = c.get("user")
   try {
     const body = await c.req.json()
-    const { emailId, frequency, contentIds, recipient, subject } = sendEmailSchema.parse(body)
+    const { emailId, contentIds, recipient, subject } = sendEmailSchema.parse(body)
     const { email: adminEmail } = user
 
     const emailData = broadcastedEmailsData[emailId]
@@ -46,6 +47,17 @@ export async function handleSendEmail(c: AppContext) {
       .select()
       .from(emailContent)
       .where(inArray(emailContent.id, contentIds))
+
+    if (contentsArray.length !== contentIds.length) {
+      logger.error(`One or more content blocks were not found: ${contentIds.join(", ")}`)
+      return c.json(
+        {
+          success: false,
+          message: "One or more content blocks were not found"
+        },
+        400
+      )
+    }
 
     const template = await getMasterTemplate()
 
@@ -92,7 +104,12 @@ export async function handleSendEmail(c: AppContext) {
 
     return c.json({ success: true, message: `${emailSubject} email sent`, result })
   } catch (error) {
-    logger.error(`Error sending email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`)
+    if (error instanceof z.ZodError) {
+      return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
+    }
+    logger.error(
+      `Error sending email: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
+    )
     return c.json({ success: false, message: "Error sending email" }, 500)
   }
 }

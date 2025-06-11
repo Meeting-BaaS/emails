@@ -12,6 +12,7 @@ import { UNKNOWN_ERROR } from "../lib/constants"
 import Handlebars from "handlebars"
 import { broadcastedEmailsData } from "./admin/send-email"
 import { emailTypes } from "../lib/email-types"
+import { z } from "zod"
 
 interface EmailMetadata {
   template: string
@@ -103,7 +104,12 @@ export async function handleResend(c: AppContext) {
       result
     })
   } catch (error) {
-    logger.error(`Error resending email: ${error instanceof Error ? error.stack : UNKNOWN_ERROR}`)
+    if (error instanceof z.ZodError) {
+      return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)
+    }
+    logger.error(
+      `Error resending email: ${error instanceof Error ? error.stack || error.message : UNKNOWN_ERROR}`
+    )
     logger.debug(`Error details: ${JSON.stringify(error)}`)
 
     return c.json({ success: false, message: "Error resending email" }, 500)
