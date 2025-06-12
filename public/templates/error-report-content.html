@@ -1,0 +1,40 @@
+<!-- Error Report Content Section -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="content-container">
+    <tbody>
+        <tr style="width:100%">
+            <td>
+                <p class="greeting-text">
+                    Hi {{firstName}},
+                </p>
+                <div class="main-content">
+                    <p class="main-content-text">Thank you for taking the time to report an error for the bot ID:
+                        {{botUuid}}. We have received
+                        your error report and our team will investigate it promptly.</p>
+
+                    {{#if additionalContext}}
+                    <p class="main-content-text"><strong>Provided Context:</strong> {{additionalContext}}</p>
+                    {{/if}}
+
+                    <p class="main-content-text">In the meantime, we have created an AI chat for you to understand the
+                        lifecycle of your bot.</p>
+
+                    <div class="button-container">
+                        <a href="{{chatLink}}" target="_blank" rel="noopener noreferrer" class="button-link">Open
+                            Chat</a>
+                    </div>
+
+                    <p class="main-content-text">If you have any additional information to provide, you can add it
+                        through the <a href="{{logLink}}" target="_blank" rel="noopener noreferrer">logs</a> app.</p>
+
+                    <p class="main-content-text">We appreciate your patience as we work to resolve this issue. If we
+                        need any additional
+                        information, we'll reach out to you directly.</p>
+
+
+                    <p class="main-content-text"><strong>The Meeting BaaS Team</strong></p>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

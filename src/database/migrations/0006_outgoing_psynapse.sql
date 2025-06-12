@@ -1,0 +1,1 @@
+ALTER TABLE "email_logs" ADD COLUMN "message_ids" varchar;

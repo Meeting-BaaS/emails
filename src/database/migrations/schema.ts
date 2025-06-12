@@ -2,7 +2,7 @@ import { pgTable, varchar, timestamp, index, foreignKey, integer, numeric, seria
 import { sql } from "drizzle-orm"
 
 export const audioFrequency = pgEnum("audio_frequency", ['f16khz', 'f24khz'])
-export const emailType = pgEnum("email_type", ['insufficient_tokens_recording', 'payment_activation', 'usage_report', 'welcome', 'usage-reports', 'product-updates', 'maintenance', 'company-news', 'api-changes', 'developer-resources', 'security', 'billing'])
+export const emailType = pgEnum("email_type", ['insufficient_tokens_recording', 'payment_activation', 'usage_report', 'welcome', 'usage-reports','error-report', 'product-updates', 'maintenance', 'company-news', 'api-changes', 'developer-resources', 'security', 'billing', 'activity-updates', 'custom'])
 export const meetingToJoin = pgEnum("meeting_to_join", ['all', 'owned', 'internal', 'external'])
 export const provider = pgEnum("provider", ['google', 'microsoft', 'apple'])
 export const recordingMode = pgEnum("recording_mode", ['audio_only', 'speaker_view', 'gallery_view'])
@@ -98,6 +98,9 @@ export const emailLogs = pgTable("email_logs", {
 	accountId: integer("account_id").notNull(),
 	emailType: emailType("email_type").notNull(),
 	sentAt: timestamp("sent_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	subject: varchar("subject"),
+	triggeredBy: varchar("triggered_by").default('system'),
+	messageIds: varchar("message_ids"),
 	metadata: jsonb(),
 	success: boolean().default(true).notNull(),
 	errorMessage: text("error_message"),
@@ -117,12 +120,29 @@ export const emailPreferences = pgTable("email_preferences", {
 	frequency: varchar().default('never').notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 }, (table) => [
+	index("email_preferences_account_id_email_type_idx").using("btree", table.accountId.asc().nullsLast().op("int4_ops"), table.emailType.asc().nullsLast().op("int4_ops")),
 	foreignKey({
 			columns: [table.accountId],
 			foreignColumns: [accounts.id],
 			name: "email_preferences_account_id_fkey"
 		}),
 	unique("email_preferences_account_id_email_type_key").on(table.accountId, table.emailType),
+]);
+
+export const emailContent = pgTable("email_content", {
+	id: serial().primaryKey().notNull(),
+	accountId: integer("account_id").notNull(),
+	emailType: emailType("email_type").notNull(),
+	content: varchar().notNull(),
+	contentText: varchar("content_text").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("email_content_account_id_idx").using("btree", table.accountId.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.accountId],
+			foreignColumns: [accounts.id],
+			name: "email_content_account_id_fkey"
+		}).onDelete("cascade")
 ]);
 
 export const events = pgTable("events", {

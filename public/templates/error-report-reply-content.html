@@ -1,0 +1,30 @@
+<!-- Error Report Content Section -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="content-container">
+    <tbody>
+        <tr style="width:100%">
+            <td>
+                <p class="greeting-text">
+                    Hi {{firstName}},
+                </p>
+                <div class="main-content">
+                    <p class="main-content-text">You have received a new update to your error report:</p>
+                    <p class="main-content-text"><strong>{{reply}}</strong></p>
+
+                    {{#if resolved}}
+                    <p class="main-content-text">The issue has been marked as resolved. If you think this is not the
+                        case, you can reopen the issue through the
+                        <a href="{{logLink}}" target="_blank" rel="noopener noreferrer">logs</a> app.
+                    </p>
+                    {{else}}
+                    <p class="main-content-text">If you have any additional information to provide, you can add it
+                        through the <a href="{{logLink}}" target="_blank" rel="noopener noreferrer">logs</a> app.</p>
+                    {{/if}}
+
+
+                    <p class="main-content-text"><strong>The Meeting BaaS Team</strong></p>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

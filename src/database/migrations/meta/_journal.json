@@ -8,6 +8,55 @@
       "when": 1749378103510,
       "tag": "0000_petite_naoko",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749464331012,
+      "tag": "0001_fresh_sersi",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749473208015,
+      "tag": "0002_stiff_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1749488440729,
+      "tag": "0003_amazing_young_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1749552384663,
+      "tag": "0004_mighty_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1749554440864,
+      "tag": "0005_ordinary_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1749574207623,
+      "tag": "0006_outgoing_psynapse",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1749604642304,
+      "tag": "0007_wise_gwen_stacy",
+      "breakpoints": true
     }
   ]
 }
