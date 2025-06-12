@@ -42,6 +42,10 @@ export async function handleSendEmail(c: AppContext) {
     const { email: adminEmail } = user
 
     const emailData = broadcastedEmailsData[emailId]
+    if (!emailData) {
+      logger.error(`Unknown emailId: ${emailId}`)
+      return c.json({ success: false, message: `Unknown emailId: ${emailId}` }, 400)
+    }
 
     const contentsArray = await db
       .select()

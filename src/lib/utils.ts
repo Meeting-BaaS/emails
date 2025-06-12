@@ -17,6 +17,7 @@ export const currentDateUTC = () => {
   return dayjs().utc().toISOString()
 }
 
+// Cache the compiled templates if the service is deployed on a server, instead of serverless
 export async function getMasterTemplate() {
   const templatesDir = join(process.cwd(), "public", "templates")
 
