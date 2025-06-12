@@ -59,11 +59,16 @@ export async function handleSendEmail(c: AppContext) {
       )
     }
 
+    // Sort contentsArray to match the order of contentIds
+    const orderedContents = contentIds.map(
+      (id) => contentsArray.find((content) => content.id === id)!
+    )
+
     const template = await getMasterTemplate()
 
     const data = {
       firstName: recipient.firstname,
-      mainContent: contentsArray.map((content) => content.content).join("<br><br>"),
+      mainContent: orderedContents.map((content) => content.content).join("<br><br>"),
       ctaButton: emailData.ctaButton,
       supportEmail: SUPPORT_EMAIL,
       unsubscribeLink: getUnsubscribeLink(emailId as EmailType["id"]),
