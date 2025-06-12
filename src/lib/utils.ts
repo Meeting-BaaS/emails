@@ -3,7 +3,10 @@ import path, { join } from "node:path"
 import Handlebars from "handlebars"
 import type { EmailId } from "../types/email-types"
 import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
 import { SETTINGS_URL } from "./external-urls"
+
+dayjs.extend(utc)
 
 export const getEnvValue = (key: string) => {
   const value = process.env[key]
