@@ -8,8 +8,14 @@ export const SYSTEM_MESSAGE =
 // Error Report subject
 export const ERROR_REPORT_SUBJECT = "Error Report Received"
 
+// Disable cool down for system emails
+export const DISABLE_COOLDOWN_FOR_SYSTEM_EMAILS = true
+
 // Insufficient tokens email
 export const INSUFFICIENT_TOKENS_COOLDOWN = 24
 export const DEFAULT_RECORDING_RATE = "1.00"
 export const DEFAULT_TRANSCRIPTION_RATE = "+0.25"
 export const DEFAULT_STREAMING_OUTPUT_RATE = "+0.10"
+
+// Payment activation email
+export const PAYMENT_ACTIVATION_COOLDOWN = 24

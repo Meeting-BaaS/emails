@@ -1,0 +1,135 @@
+<!-- Payment Activation Content -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="content-container">
+    <tbody>
+        <tr style="width:100%">
+            <td>
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p class="banner warning">
+                                    Action Required
+                                </p>
+                                <p class="greeting-text">Dear {{firstName}},</p>
+                                <p class="main-content">Your account currently has a negative balance. To prevent
+                                    interruption of
+                                    recording services, please top up your tokens within the next 24 hours.</p>
+                                <p class="main-content">As previously communicated, starting from:</p>
+                                <div class="date-box">
+                                    <p>Friday, February 21st, 2024 at 00:00 AM CET</p>
+                                </div>
+                                <p class="main-content">Our token-based system will be enforced across all services.
+                                    Here's what this means for you:</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                    role="presentation" class="token-balance-container">
+                                    <tbody>
+                                        <tr style="width:100%">
+                                            <td>
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0"
+                                                    role="presentation">
+                                                    <tr>
+                                                        <td>
+                                                            <p class="token-balance-label">Current Balance:</p>
+                                                            <p class="token-balance-value token-balance-required">
+                                                                {{tokenBalance}} tokens</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <ul class="main-content" style="margin: 0; padding-left: 20px;">
+                                    <li>All recording operations require a positive token balance</li>
+                                    <li>New recordings cannot start without sufficient tokens</li>
+                                    <li>Active recordings may be paused if your balance becomes negative</li>
+                                    <li>Maintaining a positive balance ensures uninterrupted service</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="main-content">If you've already made a purchase with us, and feel this amount is incorrect,
+                    please contact our support team at <a href="mailto:{{supportEmail}}"
+                        class="support-link">{{supportEmail}}</a></p>
+
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h2 class="rates-title">Current Token Rates</h2>
+                                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                    role="presentation" class="rates-container">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0"
+                                                    role="presentation">
+                                                    <tr>
+                                                        <td>
+                                                            <p class="rate-label">Recording</p>
+                                                        </td>
+                                                        <td align="right">
+                                                            <p class="rate-value">{{recordingRate}} tokens per hour</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="rate-label">Transcription</p>
+                                                        </td>
+                                                        <td align="right">
+                                                            <p class="rate-value">{{transcriptionRate}} tokens per hour
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="rate-label">Streaming</p>
+                                                        </td>
+                                                        <td align="right">
+                                                            <p class="rate-value">{{streamingRate}} tokens per hour</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="button-container">
+                    <a href="{{billingLink}}" target="_blank" rel="noopener noreferrer" class="button-link"
+                        style="color: rgb(35, 35, 35) !important;">Purchase
+                        Tokens</a>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -112,6 +112,29 @@ export async function getInsufficientTokensTemplate() {
   return Handlebars.compile(masterTemplate)
 }
 
+export async function getPaymentActivationTemplate() {
+  const paymentActivationContentTemplatePath = path.join(
+    templatesDir,
+    "payment-activation-content.html"
+  )
+
+  // Load all templates
+  const [masterTemplate, paymentActivationContentTemplate, headerTemplate, footerTemplate] =
+    await Promise.all([
+      fs.readFile(masterTemplatePath, "utf8"),
+      fs.readFile(paymentActivationContentTemplatePath, "utf8"),
+      fs.readFile(headerTemplatePath, "utf8"),
+      fs.readFile(footerTemplatePath, "utf8")
+    ])
+
+  // Register partials
+  Handlebars.registerPartial("content", paymentActivationContentTemplate)
+  Handlebars.registerPartial("header", headerTemplate)
+  Handlebars.registerPartial("footer", footerTemplate)
+
+  return Handlebars.compile(masterTemplate)
+}
+
 /**
  * Generate a message ID for an error report email.
  * As per RFC 5322, the message ID must be unique.

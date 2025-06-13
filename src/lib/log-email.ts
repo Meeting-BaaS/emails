@@ -15,6 +15,7 @@ interface LogEmailParams {
     botUuid?: string
     available_tokens?: string
     required_tokens?: string
+    token_balance?: string
   }
   triggeredBy: string
   subject?: string
