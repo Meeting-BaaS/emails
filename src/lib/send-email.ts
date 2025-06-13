@@ -1,7 +1,6 @@
 import { type CreateEmailResponseSuccess, Resend } from "resend"
 import { getEnvValue } from "./utils"
 import { logger } from "./logger"
-import { SUPPORT_EMAIL } from "./constants"
 
 const resend = new Resend(getEnvValue("RESEND_API_KEY"))
 
@@ -64,8 +63,7 @@ export const sendErrorReportEmail = async ({
     headers: {
       "Message-ID": messageId,
       References: references?.join(" ") || messageId
-    },
-    replyTo: SUPPORT_EMAIL
+    }
   })
 
   if (error) {
