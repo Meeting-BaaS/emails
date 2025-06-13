@@ -7,6 +7,11 @@ import utc from "dayjs/plugin/utc"
 import { SETTINGS_URL } from "./external-urls"
 
 dayjs.extend(utc)
+const templatesDir = join(process.cwd(), "public", "templates")
+const masterTemplatePath = path.join(templatesDir, "master.html")
+const headerTemplatePath = path.join(templatesDir, "header.html")
+const footerTemplatePath = path.join(templatesDir, "footer.html")
+const errorFooterTemplatePath = path.join(templatesDir, "error-report-footer.html")
 
 export const getEnvValue = (key: string) => {
   const value = process.env[key]
@@ -22,14 +27,14 @@ export const currentDateUTC = () => {
 
 // Cache the compiled templates if the service is deployed on a server, instead of serverless
 export async function getMasterTemplate() {
-  const templatesDir = join(process.cwd(), "public", "templates")
+  const genericTemplatePath = path.join(templatesDir, "content.html")
 
   // Load all templates
   const [masterTemplate, contentTemplate, headerTemplate, footerTemplate] = await Promise.all([
-    fs.readFile(path.join(templatesDir, "master.html"), "utf8"),
-    fs.readFile(path.join(templatesDir, "content.html"), "utf8"),
-    fs.readFile(path.join(templatesDir, "header.html"), "utf8"),
-    fs.readFile(path.join(templatesDir, "footer.html"), "utf8")
+    fs.readFile(masterTemplatePath, "utf8"),
+    fs.readFile(genericTemplatePath, "utf8"),
+    fs.readFile(headerTemplatePath, "utf8"),
+    fs.readFile(footerTemplatePath, "utf8")
   ])
 
   // Register partials
@@ -45,15 +50,15 @@ export const getUnsubscribeLink = (email: EmailId) => {
 }
 
 export async function getErrorReportTemplate() {
-  const templatesDir = join(process.cwd(), "public", "templates")
+  const errorContentTemplatePath = path.join(templatesDir, "error-report-content.html")
 
   // Load all templates
   const [masterTemplate, errorContentTemplate, headerTemplate, errorFooterTemplate] =
     await Promise.all([
-      fs.readFile(path.join(templatesDir, "master.html"), "utf8"),
-      fs.readFile(path.join(templatesDir, "error-report-content.html"), "utf8"),
-      fs.readFile(path.join(templatesDir, "header.html"), "utf8"),
-      fs.readFile(path.join(templatesDir, "error-report-footer.html"), "utf8")
+      fs.readFile(masterTemplatePath, "utf8"),
+      fs.readFile(errorContentTemplatePath, "utf8"),
+      fs.readFile(headerTemplatePath, "utf8"),
+      fs.readFile(errorFooterTemplatePath, "utf8")
     ])
 
   // Register partials
@@ -65,21 +70,44 @@ export async function getErrorReportTemplate() {
 }
 
 export async function getErrorReportReplyTemplate() {
-  const templatesDir = join(process.cwd(), "public", "templates")
+  const replyContentTemplatePath = path.join(templatesDir, "error-report-reply-content.html")
 
   // Load all templates
-  const [masterTemplate, errorContentTemplate, headerTemplate, errorFooterTemplate] =
+  const [masterTemplate, replyContentTemplate, headerTemplate, errorFooterTemplate] =
     await Promise.all([
-      fs.readFile(path.join(templatesDir, "master.html"), "utf8"),
-      fs.readFile(path.join(templatesDir, "error-report-reply-content.html"), "utf8"),
-      fs.readFile(path.join(templatesDir, "header.html"), "utf8"),
-      fs.readFile(path.join(templatesDir, "error-report-footer.html"), "utf8")
+      fs.readFile(masterTemplatePath, "utf8"),
+      fs.readFile(replyContentTemplatePath, "utf8"),
+      fs.readFile(headerTemplatePath, "utf8"),
+      fs.readFile(errorFooterTemplatePath, "utf8")
     ])
 
   // Register partials
-  Handlebars.registerPartial("content", errorContentTemplate)
+  Handlebars.registerPartial("content", replyContentTemplate)
   Handlebars.registerPartial("header", headerTemplate)
   Handlebars.registerPartial("footer", errorFooterTemplate)
+
+  return Handlebars.compile(masterTemplate)
+}
+
+export async function getInsufficientTokensTemplate() {
+  const insufficientTokensContentTemplatePath = path.join(
+    templatesDir,
+    "insufficient-tokens-content.html"
+  )
+
+  // Load all templates
+  const [masterTemplate, insufficientTokensContentTemplate, headerTemplate, footerTemplate] =
+    await Promise.all([
+      fs.readFile(masterTemplatePath, "utf8"),
+      fs.readFile(insufficientTokensContentTemplatePath, "utf8"),
+      fs.readFile(headerTemplatePath, "utf8"),
+      fs.readFile(footerTemplatePath, "utf8")
+    ])
+
+  // Register partials
+  Handlebars.registerPartial("content", insufficientTokensContentTemplate)
+  Handlebars.registerPartial("header", headerTemplate)
+  Handlebars.registerPartial("footer", footerTemplate)
 
   return Handlebars.compile(masterTemplate)
 }

@@ -53,7 +53,7 @@ export async function handleNewErrorReport(c: AppContext) {
       emailType: "error-report",
       triggeredBy: "system",
       subject,
-      metadata: { template: html, botUuid },
+      metadata: { template: html, botUuid, resend_id: result.id },
       messageIds: messageId
     })
 
@@ -147,7 +147,7 @@ export async function handleErrorReportReply(c: AppContext) {
       emailType: "error-report",
       triggeredBy: "system",
       subject,
-      metadata: { template: html, botUuid },
+      metadata: { template: html, botUuid, resend_id: result.id },
       messageIds: newMessageIds.join(",")
     })
 

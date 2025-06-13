@@ -108,7 +108,7 @@ export async function handleSendEmail(c: AppContext) {
       emailType: emailId as EmailType["id"],
       subject: emailSubject,
       triggeredBy: adminEmail,
-      metadata: { template: htmlWithoutName }
+      metadata: { template: htmlWithoutName, resend_id: result.id }
     })
 
     return c.json({ success: true, message: `${emailSubject} email sent`, result })

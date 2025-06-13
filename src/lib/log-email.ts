@@ -10,8 +10,11 @@ interface LogEmailParams {
   success?: boolean
   errorMessage?: string
   metadata?: {
+    resend_id: string
     template?: string
     botUuid?: string
+    available_tokens?: string
+    required_tokens?: string
   }
   triggeredBy: string
   subject?: string
@@ -41,27 +44,33 @@ export async function logEmailSend({
       subject,
       messageIds
     })
-    logger.debug("Email sent", {
-      accountId,
-      emailType,
-      success,
-      errorMessage,
-      sentAt,
-      metadata,
-      triggeredBy,
-      subject,
-      messageIds
-    })
+    logger.debug(
+      {
+        accountId,
+        emailType,
+        success,
+        errorMessage,
+        sentAt,
+        metadata,
+        triggeredBy,
+        subject,
+        messageIds
+      },
+      "Email sent"
+    )
   } catch (error) {
     // Log the error but don't throw it - we don't want email logging failures to affect the main flow
-    logger.error("Failed to log email send", {
-      error,
-      accountId,
-      emailType,
-      metadata,
-      triggeredBy,
-      subject,
-      messageIds
-    })
+    logger.error(
+      {
+        error,
+        accountId,
+        emailType,
+        metadata,
+        triggeredBy,
+        subject,
+        messageIds
+      },
+      "Failed to log email send"
+    )
   }
 }

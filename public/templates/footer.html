@@ -31,9 +31,14 @@
                 <p class="footer-contact">Questions? Contact us at
                   <a href="mailto:{{supportEmail}}" target="_blank">{{supportEmail}}</a>
                 </p>
+                {{#if systemMessage}}
+                <p class="footer-system-message">{{systemMessage}}</p>
+                {{/if}}
+                {{#unless hideUnsubscribeLink}}
                 <p class="footer-unsubscribe"> Is this email not relevant to you? <a href="{{unsubscribeLink}}"
                     target="_blank">Unsubscribe</a>
                 </p>
+                {{/unless}}
               </td>
             </tr>
           </tbody>

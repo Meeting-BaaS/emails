@@ -17,3 +17,4 @@ const createUrl = (subdomain: string) => {
 export const SETTINGS_URL = createUrl("settings")
 export const AI_CHAT_URL = createUrl("chat")
 export const LOGS_URL = createUrl("logs")
+export const BILLING_URL = `${createUrl("pricing")}/billing`
