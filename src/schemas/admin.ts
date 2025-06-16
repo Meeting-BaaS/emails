@@ -14,6 +14,19 @@ export const saveContentSchema = z.object({
   contentText: z.string().min(1, "Content text cannot be empty")
 })
 
+const contentIdSchema = z.number().positive()
+
+export const updateContentSchema = saveContentSchema.extend({
+  id: contentIdSchema
+})
+
+export const deleteContentSchema = z.object({
+  id: z
+    .string()
+    .transform((val) => Number(val))
+    .pipe(contentIdSchema)
+})
+
 export const sendEmailSchema = z.object({
   emailId: emailIdsZod,
   frequency: emailFrequenciesZod,
