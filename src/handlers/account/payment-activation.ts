@@ -10,7 +10,7 @@ import {
   SYSTEM_MESSAGE,
   UNKNOWN_ERROR
 } from "../../lib/constants"
-import { getPaymentActivationTemplate } from "../../lib/utils"
+import { getPaymentActivationTemplate, getUnsubscribeLink } from "../../lib/utils"
 import { sendEmail } from "../../lib/send-email"
 import { logEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
@@ -18,12 +18,25 @@ import { BILLING_URL } from "../../lib/external-urls"
 import { formatTokenBalance } from "../../lib/stripe-products"
 import { checkSystemEmailCoolDown } from "../../lib/check-cooldown"
 import { sendPaymentActivationEmailSchema } from "../../schemas/account"
+import { isUnsubscribed } from "../../lib/is-unsubscribed"
 
 export async function handleSendPaymentActivationEmail(c: Context) {
   try {
     const body = await c.req.json()
     const { account_id, email, first_name, token_balance } =
       sendPaymentActivationEmailSchema.parse(body)
+
+    // Check if the account is subscribed to the email type
+    // Even though the email is an payment activation email,
+    // The unsubscribe link would be activity-updates for this kind of email
+    const hasUnsubscribed = await isUnsubscribed(account_id, "activity-updates")
+    if (hasUnsubscribed) {
+      logger.debug(`Account ${account_id} is not subscribed to activity-updates, skipping email`)
+      return c.json(
+        { success: true, message: "Account is not subscribed to activity-updates" },
+        200
+      )
+    }
 
     const { canSend, nextAvailableAt } = await checkSystemEmailCoolDown(
       account_id,
@@ -55,7 +68,7 @@ export async function handleSendPaymentActivationEmail(c: Context) {
       billingLink: BILLING_URL,
       supportEmail: SUPPORT_EMAIL,
       year: new Date().getFullYear(),
-      hideUnsubscribeLink: true,
+      unsubscribeLink: getUnsubscribeLink("activity-updates"),
       systemMessage: SYSTEM_MESSAGE
     }
 
