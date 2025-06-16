@@ -27,14 +27,16 @@ export const deleteContentSchema = z.object({
     .pipe(contentIdSchema)
 })
 
+export const recipientsSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  firstname: z.string(),
+  lastname: z.string()
+})
+
 export const sendEmailSchema = z.object({
   emailId: emailIdsZod,
   frequency: emailFrequenciesZod,
   subject: z.string().trim().optional(),
   contentIds: z.array(z.number()).min(1, "At least one content is required"),
-  recipient: z.object({
-    email: z.string().email("Invalid email address"),
-    firstname: z.string().min(1, "First name is required"),
-    lastname: z.string().min(1, "Last name is required")
-  })
+  recipients: z.array(recipientsSchema)
 })
