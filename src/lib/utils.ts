@@ -211,24 +211,25 @@ export const getSubject = (frequency: EmailFrequency, startDate: Date, endDate: 
 }
 
 // Get the duration for the usage report
+// The duration is fetched from the previous frequency, not the current one
 export const getDuration = (
   frequency: EmailFrequency
 ): { startDate: Date; endDate: Date } | undefined => {
   switch (frequency) {
     case "Daily":
       return {
-        startDate: dayjs().utc().startOf("day").toDate(),
-        endDate: dayjs().utc().endOf("day").toDate()
+        startDate: dayjs().utc().subtract(1, "day").startOf("day").toDate(),
+        endDate: dayjs().utc().subtract(1, "day").endOf("day").toDate()
       }
     case "Weekly":
       return {
-        startDate: dayjs().utc().startOf("week").toDate(),
-        endDate: dayjs().utc().endOf("week").toDate()
+        startDate: dayjs().utc().subtract(1, "week").startOf("week").toDate(),
+        endDate: dayjs().utc().subtract(1, "week").endOf("week").toDate()
       }
     case "Monthly":
       return {
-        startDate: dayjs().utc().startOf("month").toDate(),
-        endDate: dayjs().utc().endOf("month").toDate()
+        startDate: dayjs().utc().subtract(1, "month").startOf("month").toDate(),
+        endDate: dayjs().utc().subtract(1, "month").endOf("month").toDate()
       }
   }
 }

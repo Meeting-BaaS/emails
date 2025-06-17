@@ -1,4 +1,4 @@
-import { eq, and, sql, isNotNull, count, gte, lte } from "drizzle-orm"
+import { eq, and, sql, isNotNull, count, gte, lte, like } from "drizzle-orm"
 import { emailPreferences, accounts, bots, botConsumption } from "../database/migrations/schema"
 import { db } from "../lib/db"
 import { logger } from "../lib/logger"
@@ -167,7 +167,10 @@ export async function sendUsageReports(c: Context) {
         and(
           eq(emailPreferences.accountId, accounts.id),
           eq(emailPreferences.emailType, emailTypeId),
-          eq(emailPreferences.frequency, frequency)
+          eq(emailPreferences.frequency, frequency),
+          // TODO: Initially, emails are only sent to meetingbaas.com emails
+          // We will remove this once we are ready to send emails to all users
+          like(accounts.email, "%@meetingbaas.com")
         )
       )
     logger.info(`Found ${subscribers.length} subscribers for ${frequency} usage reports`)
