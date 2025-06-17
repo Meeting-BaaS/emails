@@ -42,21 +42,34 @@ export const sendEmailSchema = z.object({
   recipients: z.array(recipientsSchema).min(1, "At least one recipient is required")
 })
 
-export const getEmailLogsSchema = z.object({
-  limit: z.string().regex(/^\d+$/).transform(Number),
-  offset: z.string().regex(/^\d+$/).transform(Number),
-  emailId: emailIdsZod.optional(),
-  accountEmail: z.string().email().optional(),
-  startDate: z
-    .string()
-    .optional()
-    .refine((val) => (val ? dayjs(val).isValid() : true), {
-      message: "Invalid start date"
-    }),
-  endDate: z
-    .string()
-    .optional()
-    .refine((val) => (val ? dayjs(val).isValid() : true), {
-      message: "Invalid end date"
-    })
-})
+export const getEmailLogsSchema = z
+  .object({
+    limit: z.string().min(1).regex(/^\d+$/).transform(Number),
+    offset: z.string().min(0).regex(/^\d+$/).transform(Number),
+    emailId: emailIdsZod.optional(),
+    accountEmail: z.string().email().optional(),
+    startDate: z
+      .string()
+      .optional()
+      .refine((val) => (val ? dayjs(val).isValid() : true), {
+        message: "Invalid start date"
+      }),
+    endDate: z
+      .string()
+      .optional()
+      .refine((val) => (val ? dayjs(val).isValid() : true), {
+        message: "Invalid end date"
+      })
+  })
+  .refine(
+    (data) => {
+      if (data.startDate && data.endDate) {
+        return dayjs(data.startDate).isBefore(dayjs(data.endDate))
+      }
+      return true
+    },
+    {
+      message: "Start date must be before end date",
+      path: ["startDate"]
+    }
+  )

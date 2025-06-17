@@ -23,6 +23,9 @@ export const fetchAllProducts = async (): Promise<StripeProductWithPrice[]> => {
         active: true
       })
       const price = prices.data[0]
+      if (!price) {
+        throw new Error(`Product ${product.id} has no active price`)
+      }
       return {
         ...product,
         price

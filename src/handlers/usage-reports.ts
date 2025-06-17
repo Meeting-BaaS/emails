@@ -1,8 +1,9 @@
-import { eq, and, sql, isNotNull, count, gte, lte, like } from "drizzle-orm"
+import { eq, and, sql, isNotNull, count, gte, lte, like, inArray } from "drizzle-orm"
 import { emailPreferences, accounts, bots, botConsumption } from "../database/migrations/schema"
 import { db } from "../lib/db"
 import { logger } from "../lib/logger"
 import {
+  EMAIL_BATCH_DELAY_MS,
   SUPPORT_EMAIL,
   TRIGGER_USAGE_REPORTS_CRON_JOBS,
   USAGE_REPORTS_BATCH_SIZE
@@ -61,7 +62,7 @@ async function getAllUsageStats(
     .leftJoin(botConsumption, eq(bots.id, botConsumption.botId))
     .where(
       and(
-        sql`${bots.accountId} = ANY(${sql.raw(`ARRAY[${accountIds.join(",")}]`)})`,
+        inArray(bots.accountId, accountIds),
         isNotNull(bots.endedAt), // Bot must have ended
         gte(bots.endedAt, startDate.toISOString()),
         lte(bots.endedAt, endDate.toISOString()),
@@ -293,7 +294,7 @@ export async function sendUsageReports(c: Context) {
       await sendBatchEmails(batch)
       logger.info(`Batch ${batchIndex} sent successfully`)
       // Wait for 1 second to avoid rate limiting from Resend
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, EMAIL_BATCH_DELAY_MS))
     }
 
     logger.info(`Inserting ${emailLogs.length} email logs`)
