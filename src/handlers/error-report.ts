@@ -24,7 +24,7 @@ export async function handleNewErrorReport(c: AppContext) {
     const { botUuid, chatId, additionalContext } = newErrorReportSchema.parse(body)
 
     const templateData = {
-      firstName: firstname,
+      firstName: firstname || "there",
       botUuid,
       chatId,
       additionalContext,
@@ -118,7 +118,7 @@ export async function handleErrorReportReply(c: AppContext) {
     const currentMessageId = generateErrorReportReplyMessageId(botUuid, currentMessageSequence)
 
     const templateData = {
-      firstName: firstname,
+      firstName: firstname || "there",
       botUuid,
       resolved,
       reply,

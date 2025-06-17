@@ -77,7 +77,7 @@ export async function handleResend(c: AppContext) {
     const template = Handlebars.compile(latestEmailContent)
 
     const data = {
-      firstName: firstname
+      firstName: firstname || "there"
     }
 
     const html = template(data)
