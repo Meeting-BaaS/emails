@@ -30,8 +30,8 @@ export const deleteContentSchema = z.object({
 
 export const recipientsSchema = z.object({
   email: z.string().email("Invalid email address"),
-  firstname: z.string(),
-  lastname: z.string()
+  firstname: z.string().optional(),
+  lastname: z.string().optional()
 })
 
 export const sendEmailSchema = z.object({
