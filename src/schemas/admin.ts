@@ -44,8 +44,16 @@ export const sendEmailSchema = z.object({
 
 export const getEmailLogsSchema = z
   .object({
-    limit: z.string().min(1).regex(/^\d+$/).transform(Number),
-    offset: z.string().min(0).regex(/^\d+$/).transform(Number),
+    limit: z
+      .string()
+      .regex(/^\d+$/)
+      .transform(Number)
+      .refine((v) => v >= 1, { message: "limit must be ≥ 1" }),
+    offset: z
+      .string()
+      .regex(/^\d+$/)
+      .transform(Number)
+      .refine((v) => v >= 0, { message: "offset must be ≥ 0" }),
     emailId: emailIdsZod.optional(),
     accountEmail: z.string().email().optional(),
     startDate: z
