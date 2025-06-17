@@ -80,6 +80,7 @@ export async function handleSendEmail(c: AppContext) {
     )
 
     const template = await getMasterTemplate()
+    const from = getEnvValue("RESEND_EMAIL_FROM")
     const emailSubject = subject || emailData.subject
     const templateBaseData = {
       mainContent: orderedContents.map((content) => content.content).join("<br><br>"),
@@ -109,7 +110,7 @@ export async function handleSendEmail(c: AppContext) {
       const html = template(data)
 
       emails.push({
-        from: getEnvValue("RESEND_EMAIL_FROM"),
+        from,
         to: recipient.email,
         subject: emailSubject,
         html

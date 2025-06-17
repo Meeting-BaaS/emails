@@ -1,0 +1,233 @@
+<!-- Usage Report Content -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="content-container">
+    <tbody>
+        <tr style="width:100%">
+            <td>
+                <p class="greeting-text">Hi {{firstName}},</p>
+                <p class="main-content">Here's your usage overview for Meeting BaaS {{durationString}}.</p>
+                <p class="main-content">You sent out <span class="highlight-value">{{totalBots}}</span> bots, for a
+                    total of <span class="highlight-value">{{totalHours}}</span> hours and <span
+                        class="highlight-value">{{totalTokens}}</span> tokens. According to our internal calculations,
+                    these bots had a <span class="error-rate">{{errorRate}}%</span> error rate.</p>
+                <p class="main-content">Read on below for more.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Usage Stats -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="stats-container">
+    <tbody>
+        <tr>
+            <td>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td width="50%" align="center" style="padding-right: 0.75rem;">
+                            <p class="stat-label">Total Number of Bots</p>
+                            <p class="stat-value">{{totalBots}}</p>
+                        </td>
+                        <td width="50%" align="center" style="padding-left: 0.75rem;">
+                            <p class="stat-label">Avg. Recording Length</p>
+                            <p class="stat-value">{{avgLength}}</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Platform Distribution -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="stats-container">
+    <tbody>
+        <tr>
+            <td>
+                <p class="section-title">Distribution by Platform</p>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <!-- Google Meet -->
+                        <td width="33.33%" align="center" style="padding: 0 1rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                    <td align="center">
+                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                            <tr>
+                                                <td class="align-middle">
+                                                    <div class="platform-dot google-meet"></div>
+                                                </td>
+                                                <td style="padding-left: 0.5rem;">
+                                                    <p class="platform-name">Google Meet</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <p class="platform-value">{{googleMeet}}</p>
+                                        <p class="platform-percentage">{{googleMeetPercentage}}%</p>
+                                        <p class="platform-success">{{googleMeetSuccess}}% success</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <!-- Zoom -->
+                        <td width="33.33%" align="center" style="padding: 0 1rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                    <td align="center">
+                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                            <tr>
+                                                <td class="align-middle">
+                                                    <div class="platform-dot zoom"></div>
+                                                </td>
+                                                <td style="padding-left: 0.5rem;">
+                                                    <p class="platform-name">Zoom</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <p class="platform-value">{{zoom}}</p>
+                                        <p class="platform-percentage">{{zoomPercentage}}%</p>
+                                        <p class="platform-success">{{zoomSuccess}}% success</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <!-- Teams -->
+                        <td width="33.33%" align="center" style="padding: 0 1rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                    <td align="center">
+                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                            <tr>
+                                                <td class="align-middle">
+                                                    <div class="platform-dot teams"></div>
+                                                </td>
+                                                <td style="padding-left: 0.5rem;">
+                                                    <p class="platform-name">Teams</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <p class="platform-value">{{teams}}</p>
+                                        <p class="platform-percentage">{{teamsPercentage}}%</p>
+                                        <p class="platform-success">{{teamsSuccess}}% success</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Hours Breakdown -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="stats-container">
+    <tbody>
+        <tr>
+            <td>
+                <h1 class="section-title">Hours Breakdown</h1>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td width="50%" style="padding-right: 0.5rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                style="background-color: rgb(43, 43, 43); border-radius: 0.5rem; padding: 1rem;">
+                                <tr>
+                                    <td>
+                                        <p class="hours-label">Recording</p>
+                                        <p class="hours-value">{{recordingHours}} hours</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="50%" style="padding-left: 0.5rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                style="background-color: rgb(43, 43, 43); border-radius: 0.5rem; padding: 1rem;">
+                                <tr>
+                                    <td>
+                                        <p class="hours-label">Transcription</p>
+                                        <p class="hours-value">{{transcriptionHours}} hours</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Token Consumption -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="stats-container">
+    <tbody>
+        <tr>
+            <td>
+                <h1 class="section-title">Token Consumption</h1>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td width="50%" style="padding-right: 0.5rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                style="background-color: rgb(43, 43, 43); border-radius: 0.5rem; padding: 1rem;">
+                                <tr>
+                                    <td>
+                                        <p class="hours-label">Recording</p>
+                                        <p class="hours-value">{{recordingTokens}} tokens</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="50%" style="padding-left: 0.5rem;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                style="background-color: rgb(43, 43, 43); border-radius: 0.5rem; padding: 1rem;">
+                                <tr>
+                                    <td>
+                                        <p class="hours-label">Transcription</p>
+                                        <p class="hours-value">{{transcriptionTokens}} tokens</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- CTAs -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+    <tbody>
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" class="header-logo-container">
+                    <tr>
+                        <td class="align-middle">
+                            <div class="button-container">
+                                <a href="{{analyticsLink}}" target="_blank" rel="noopener noreferrer"
+                                    style="color: rgb(35, 35, 35) !important;" class="button-link">View Analytics</a>
+                            </div>
+                        </td>
+                        <td class="align-middle pl-1">
+                            <a href="{{usageLink}}" target="_blank" rel="noopener noreferrer">Check Usage</a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

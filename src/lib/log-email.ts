@@ -4,7 +4,7 @@ import { logger } from "./logger"
 import { currentDateUTC } from "./utils"
 import type { EmailType } from "../types/email-types"
 
-interface LogEmailParams {
+export interface LogEmailParams {
   accountId: number
   emailType: EmailType["id"]
   success?: boolean
