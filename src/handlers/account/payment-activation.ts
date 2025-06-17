@@ -10,12 +10,11 @@ import {
   SYSTEM_MESSAGE,
   UNKNOWN_ERROR
 } from "../../lib/constants"
-import { getPaymentActivationTemplate, getUnsubscribeLink } from "../../lib/utils"
+import { formatNumber, getPaymentActivationTemplate, getUnsubscribeLink } from "../../lib/utils"
 import { sendEmail } from "../../lib/send-email"
 import { logEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
 import { BILLING_URL } from "../../lib/external-urls"
-import { formatTokenBalance } from "../../lib/stripe-products"
 import { checkSystemEmailCoolDown } from "../../lib/check-cooldown"
 import { sendPaymentActivationEmailSchema } from "../../schemas/account"
 import { isUnsubscribed } from "../../lib/is-unsubscribed"
@@ -57,7 +56,7 @@ export async function handleSendPaymentActivationEmail(c: Context) {
     const template = await getPaymentActivationTemplate()
 
     // Format token balance
-    const balance = formatTokenBalance(token_balance)
+    const balance = formatNumber(token_balance)
 
     const data = {
       firstName: first_name,

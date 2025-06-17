@@ -10,6 +10,7 @@ import {
 import { sendBatchEmails } from "../lib/send-email"
 import { logBatchEmailSend, type LogEmailParams } from "../lib/log-email"
 import {
+  formatNumber,
   getDuration,
   getDurationString,
   getEnvValue,
@@ -221,27 +222,32 @@ export async function sendUsageReports(c: Context) {
         continue
       }
 
+      // Format numbers where needed (percentage, hours, tokens)
       const html = template({
         ...templateBaseData,
         firstName: subscriber.firstname || "there",
         totalBots: stats.totalBots,
         totalHours: stats.hours.recording,
         totalTokens: stats.tokens.recording,
-        errorRate: stats.errorRate,
-        avgLength: stats.avgLength,
+        errorRate: formatNumber(stats.errorRate * 100),
+        avgLength: formatNumber(stats.avgLength),
         googleMeet: stats.platformStats.googleMeet.value,
-        googleMeetPercentage: (stats.platformStats.googleMeet.value / stats.totalBots) * 100,
-        googleMeetSuccess: (stats.platformStats.googleMeet.success / stats.totalBots) * 100,
+        googleMeetPercentage: formatNumber(
+          (stats.platformStats.googleMeet.value / stats.totalBots) * 100
+        ),
+        googleMeetSuccess: formatNumber(
+          (stats.platformStats.googleMeet.success / stats.totalBots) * 100
+        ),
         zoom: stats.platformStats.zoom.value,
-        zoomPercentage: (stats.platformStats.zoom.value / stats.totalBots) * 100,
-        zoomSuccess: (stats.platformStats.zoom.success / stats.totalBots) * 100,
+        zoomPercentage: formatNumber((stats.platformStats.zoom.value / stats.totalBots) * 100),
+        zoomSuccess: formatNumber((stats.platformStats.zoom.success / stats.totalBots) * 100),
         teams: stats.platformStats.teams.value,
-        teamsPercentage: (stats.platformStats.teams.value / stats.totalBots) * 100,
-        teamsSuccess: (stats.platformStats.teams.success / stats.totalBots) * 100,
-        recordingHours: stats.hours.recording,
-        transcriptionHours: stats.hours.transcription,
-        recordingTokens: stats.tokens.recording,
-        transcriptionTokens: stats.tokens.transcription
+        teamsPercentage: formatNumber((stats.platformStats.teams.value / stats.totalBots) * 100),
+        teamsSuccess: formatNumber((stats.platformStats.teams.success / stats.totalBots) * 100),
+        recordingHours: formatNumber(stats.hours.recording),
+        transcriptionHours: formatNumber(stats.hours.transcription),
+        recordingTokens: formatNumber(stats.tokens.recording),
+        transcriptionTokens: formatNumber(stats.tokens.transcription)
       })
 
       currentBatch.push({

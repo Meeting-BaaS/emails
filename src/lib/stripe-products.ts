@@ -33,11 +33,6 @@ export const fetchAllProducts = async (): Promise<StripeProductWithPrice[]> => {
   return retrievedProducts
 }
 
-// Helper functions
-export function formatTokenBalance(tokenBalance: number): string {
-  return (Math.round(tokenBalance * 100) / 100).toFixed(2)
-}
-
 function calculateRecordingHours(tokens: number, rate: number): number {
   if (rate > 0) {
     return Math.round((tokens / rate) * 100) / 100

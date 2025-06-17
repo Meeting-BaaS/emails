@@ -11,16 +11,12 @@ import {
   UNKNOWN_ERROR
 } from "../../lib/constants"
 import { z } from "zod"
-import { getInsufficientTokensTemplate, getUnsubscribeLink } from "../../lib/utils"
+import { formatNumber, getInsufficientTokensTemplate, getUnsubscribeLink } from "../../lib/utils"
 import { sendEmail } from "../../lib/send-email"
 import { logEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
 import { BILLING_URL } from "../../lib/external-urls"
-import {
-  fetchAllProducts,
-  formatProductsToTokenPacks,
-  formatTokenBalance
-} from "../../lib/stripe-products"
+import { fetchAllProducts, formatProductsToTokenPacks } from "../../lib/stripe-products"
 import { checkSystemEmailCoolDown } from "../../lib/check-cooldown"
 import { isUnsubscribed } from "../../lib/is-unsubscribed"
 
@@ -63,8 +59,8 @@ export async function handleSendInsufficientTokensEmail(c: Context) {
     const tokenPacks = formatProductsToTokenPacks(products)
 
     // Format token balances
-    const available = formatTokenBalance(available_tokens)
-    const required = formatTokenBalance(required_tokens)
+    const available = formatNumber(available_tokens)
+    const required = formatNumber(required_tokens)
 
     const template = await getInsufficientTokensTemplate()
 

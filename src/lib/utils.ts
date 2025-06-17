@@ -233,3 +233,8 @@ export const getDuration = (
       }
   }
 }
+
+// Helper function to format a number to 2 decimal places
+export function formatNumber(number: number): string {
+  return (Math.round(number * 100) / 100).toFixed(2)
+}
