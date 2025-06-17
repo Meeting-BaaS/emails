@@ -1,0 +1,199 @@
+<!-- Insufficient Tokens Content -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+    class="content-container">
+    <tbody>
+        <tr style="width:100%">
+            <td>
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h1 class="banner error">
+                                    Unable to Start Recording</h1>
+                                <p class="greeting-text">Hi {{firstName}},</p>
+                                <p class="main-content">We couldn't start your recording session because your account
+                                    has insufficient tokens. To ensure uninterrupted service with Meeting BaaS, please
+                                    add more tokens to your balance.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                    role="presentation" class="token-balance-container">
+                                    <tbody>
+                                        <tr style="width:100%">
+                                            <td>
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0"
+                                                    role="presentation">
+                                                    <tr>
+                                                        <td width="50%" style="padding-right:0.5rem">
+                                                            <p class="token-balance-label">Current Balance:</p>
+                                                            <p class="token-balance-value token-balance-available">
+                                                                {{availableTokens}} tokens</p>
+                                                        </td>
+                                                        <td width="50%" style="padding-left:0.5rem">
+                                                            <p class="token-balance-label">Minimum Tokens Required:</p>
+                                                            <p class="token-balance-value token-balance-required">
+                                                                {{requiredTokens}} tokens</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="main-content">To start using Meeting BaaS again, you'll need to top up your tokens.</p>
+
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:0.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h2 class="rates-title">Available Token Packs:</h2>
+                                <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                    {{#each tokenPacks}}
+                                    <tr>
+                                        <td style="padding-bottom:1rem">
+                                            <table align="center" width="100%" border="0" cellpadding="0"
+                                                cellspacing="0" role="presentation"
+                                                class="token-pack-card {{#if isPopular}}token-pack-card-popular{{/if}}">
+                                                <tbody>
+                                                    <tr valign="center">
+                                                        <td align="left" style="padding-bottom:1.5rem;">
+                                                            <span class="token-pack-name">{{name}}</span>
+                                                        </td>
+                                                        {{#if isPopular}}
+                                                        <td align="center" style="padding-bottom:1.5rem;">
+                                                            <span class="token-pack-popular-badge">Most Popular</span>
+                                                        </td>
+                                                        {{/if}}
+                                                        <td align="right" style="padding-bottom:1.5rem;">
+                                                            <span
+                                                                style="font-size:14px;color:rgb(185,181,181);font-weight:normal">${{pricePerHour}}/hour</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" align="left" style="padding-bottom:1.5rem;">
+                                                            <span class="token-pack-price"
+                                                                style="font-size:24px; font-weight:700; color:rgb(244,249,248);">${{price}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" align="left" style="padding-bottom:1rem;">
+                                                            <span class="token-pack-tokens"
+                                                                style="font-size:32px; font-weight:700; color:rgb(0,212,198);">{{tokens}}
+                                                                <span
+                                                                    style="font-size:16px; color:rgb(185,181,181); font-weight:normal;">tokens
+                                                                </span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" align="left" style="padding-bottom:0.5rem;">
+                                                            <span class="token-pack-details">{{recordingHours}} hours of
+                                                                raw recording</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="margin-bottom:2.5rem">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                                    role="presentation" class="rates-container">
+                                    <tbody>
+                                        <tr style="width:100%">
+                                            <td>
+                                                <h2 class="rates-title">Rates</h2>
+                                                <p class="rates-description">Our services are charged at the following
+                                                    token rates:</p>
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0"
+                                                    role="presentation">
+                                                    <tr>
+                                                        <td>
+                                                            <table width="100%" border="0" cellpadding="0"
+                                                                cellspacing="0" role="presentation"
+                                                                style="margin-bottom:1rem">
+                                                                <tr>
+                                                                    <td>
+                                                                        <p class="rate-label">Raw Video Recording</p>
+                                                                    </td>
+                                                                    <td align="right">
+                                                                        <p class="rate-value">{{recordingRate}} token
+                                                                            per
+                                                                            hour</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <table width="100%" border="0" cellpadding="0"
+                                                                cellspacing="0" role="presentation"
+                                                                style="margin-bottom:1rem">
+                                                                <tr>
+                                                                    <td>
+                                                                        <p class="rate-label">Gladia Transcription</p>
+                                                                    </td>
+                                                                    <td align="right">
+                                                                        <p class="rate-value">{{transcriptionRate}}
+                                                                            token
+                                                                            per hour</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <table width="100%" border="0" cellpadding="0"
+                                                                cellspacing="0" role="presentation">
+                                                                <tr>
+                                                                    <td>
+                                                                        <p class="rate-label">Input or Output Streaming
+                                                                        </p>
+                                                                    </td>
+                                                                    <td align="right">
+                                                                        <p class="rate-value">{{streamingRate}} token
+                                                                            per
+                                                                            hour</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="button-container">
+                    <a href="{{billingLink}}" target="_blank" rel="noopener noreferrer"
+                        style="color: rgb(35, 35, 35) !important;" class="button-link">Purchase
+                        Tokens</a>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

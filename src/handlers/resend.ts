@@ -77,7 +77,7 @@ export async function handleResend(c: AppContext) {
     const template = Handlebars.compile(latestEmailContent)
 
     const data = {
-      firstName: firstname
+      firstName: firstname || "there"
     }
 
     const html = template(data)
@@ -95,7 +95,7 @@ export async function handleResend(c: AppContext) {
       emailType: emailId as EmailType["id"],
       triggeredBy: "user",
       subject,
-      metadata: { template: latestEmailContent }
+      metadata: { template: latestEmailContent, resend_id: result.id }
     })
 
     return c.json({

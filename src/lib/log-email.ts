@@ -4,14 +4,18 @@ import { logger } from "./logger"
 import { currentDateUTC } from "./utils"
 import type { EmailType } from "../types/email-types"
 
-interface LogEmailParams {
+export interface LogEmailParams {
   accountId: number
   emailType: EmailType["id"]
   success?: boolean
   errorMessage?: string
   metadata?: {
+    resend_id?: string
     template?: string
     botUuid?: string
+    available_tokens?: string
+    required_tokens?: string
+    token_balance?: string
   }
   triggeredBy: string
   subject?: string
@@ -41,27 +45,57 @@ export async function logEmailSend({
       subject,
       messageIds
     })
-    logger.debug("Email sent", {
-      accountId,
-      emailType,
-      success,
-      errorMessage,
-      sentAt,
-      metadata,
-      triggeredBy,
-      subject,
-      messageIds
-    })
+    logger.debug(
+      {
+        accountId,
+        emailType,
+        success,
+        errorMessage,
+        sentAt,
+        triggeredBy,
+        subject,
+        messageIds
+      },
+      "Email sent"
+    )
   } catch (error) {
     // Log the error but don't throw it - we don't want email logging failures to affect the main flow
-    logger.error("Failed to log email send", {
-      error,
-      accountId,
-      emailType,
-      metadata,
-      triggeredBy,
-      subject,
-      messageIds
-    })
+    logger.error(
+      {
+        error,
+        accountId,
+        emailType,
+        triggeredBy,
+        subject,
+        messageIds
+      },
+      "Failed to log email send"
+    )
+  }
+}
+
+export async function logBatchEmailSend(emails: LogEmailParams[]) {
+  try {
+    await db.insert(emailLogs).values(
+      emails.map((email) => ({
+        ...email,
+        sentAt: currentDateUTC()
+      }))
+    )
+    logger.debug(
+      {
+        emailCount: emails.length
+      },
+      "Email sent"
+    )
+  } catch (error) {
+    // Log the error but don't throw it - we don't want email logging failures to affect the main flow
+    logger.error(
+      {
+        error,
+        emailCount: emails.length
+      },
+      "Failed to log email send"
+    )
   }
 }

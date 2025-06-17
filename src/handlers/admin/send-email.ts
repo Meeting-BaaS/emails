@@ -4,12 +4,13 @@ import { SUPPORT_EMAIL, UNKNOWN_ERROR } from "../../lib/constants"
 import { sendEmailSchema } from "../../schemas/admin"
 import { db } from "../../lib/db"
 import { accounts, emailContent } from "../../database/migrations/schema"
-import { eq, inArray } from "drizzle-orm"
-import { getMasterTemplate, getUnsubscribeLink } from "../../lib/utils"
-import { sendEmail } from "../../lib/send-email"
-import { logEmailSend } from "../../lib/log-email"
+import { inArray } from "drizzle-orm"
+import { getEnvValue, getMasterTemplate, getUnsubscribeLink } from "../../lib/utils"
+import { sendBatchEmails } from "../../lib/send-email"
+import { logBatchEmailSend } from "../../lib/log-email"
 import type { EmailType } from "../../types/email-types"
 import { z } from "zod"
+import type { CreateBatchOptions } from "resend"
 
 export const broadcastedEmailsData: Record<string, { subject: string; ctaButton: string }> = {
   "product-updates": {
@@ -38,7 +39,7 @@ export async function handleSendEmail(c: AppContext) {
   const user = c.get("user")
   try {
     const body = await c.req.json()
-    const { emailId, contentIds, recipient, subject } = sendEmailSchema.parse(body)
+    const { emailId, contentIds, recipients, subject } = sendEmailSchema.parse(body)
     const { email: adminEmail } = user
 
     const emailData = broadcastedEmailsData[emailId]
@@ -63,15 +64,25 @@ export async function handleSendEmail(c: AppContext) {
       )
     }
 
+    const recipientsArray = await db
+      .select()
+      .from(accounts)
+      .where(
+        inArray(
+          accounts.email,
+          recipients.map((recipient) => recipient.email)
+        )
+      )
+
     // Sort contentsArray to match the order of contentIds
     const orderedContents = contentIds.map(
       (id) => contentsArray.find((content) => content.id === id)!
     )
 
     const template = await getMasterTemplate()
-
-    const data = {
-      firstName: recipient.firstname,
+    const from = getEnvValue("RESEND_EMAIL_FROM")
+    const emailSubject = subject || emailData.subject
+    const templateBaseData = {
       mainContent: orderedContents.map((content) => content.content).join("<br><br>"),
       ctaButton: emailData.ctaButton,
       supportEmail: SUPPORT_EMAIL,
@@ -79,39 +90,46 @@ export async function handleSendEmail(c: AppContext) {
       year: new Date().getFullYear()
     }
 
-    const html = template(data)
-
+    const emails: CreateBatchOptions = []
+    const emailLogs = []
     // Remove the first name from the template before logging
-    // This is done to reuse the same template if user requests to send the same email again
+    // This is done to reuse the same template.
+    // if user requests to send the same email again,
+    // then we can use the latest email of the send email type
     const htmlWithoutName = template({
-      ...data,
+      ...templateBaseData,
       firstName: "{{firstName}}"
     })
 
-    const emailSubject = subject || emailData.subject
+    for (const recipient of recipientsArray) {
+      const data = {
+        firstName: recipient.firstname || "there", // In case first name is blank
+        ...templateBaseData
+      }
 
-    const result = await sendEmail({
-      to: recipient.email,
-      subject: emailSubject,
-      html
-    })
+      const html = template(data)
 
-    const recipientAccount = await db
-      .select()
-      .from(accounts)
-      .where(eq(accounts.email, recipient.email))
-      .limit(1)
-      .then(([recipient]) => recipient)
+      emails.push({
+        from,
+        to: recipient.email,
+        subject: emailSubject,
+        html
+      })
 
-    await logEmailSend({
-      accountId: recipientAccount.id,
-      emailType: emailId as EmailType["id"],
-      subject: emailSubject,
-      triggeredBy: adminEmail,
-      metadata: { template: htmlWithoutName }
-    })
+      emailLogs.push({
+        accountId: recipient.id,
+        emailType: emailId as EmailType["id"],
+        subject: emailSubject,
+        triggeredBy: adminEmail,
+        metadata: { template: htmlWithoutName }
+      })
+    }
 
-    return c.json({ success: true, message: `${emailSubject} email sent`, result })
+    await sendBatchEmails(emails)
+
+    await logBatchEmailSend(emailLogs)
+
+    return c.json({ success: true, message: `${emailSubject} email sent` })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return c.json({ success: false, message: "Invalid request body", errors: error.errors }, 400)

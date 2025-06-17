@@ -24,7 +24,7 @@ export async function handleNewErrorReport(c: AppContext) {
     const { botUuid, chatId, additionalContext } = newErrorReportSchema.parse(body)
 
     const templateData = {
-      firstName: firstname,
+      firstName: firstname || "there",
       botUuid,
       chatId,
       additionalContext,
@@ -53,7 +53,7 @@ export async function handleNewErrorReport(c: AppContext) {
       emailType: "error-report",
       triggeredBy: "system",
       subject,
-      metadata: { template: html, botUuid },
+      metadata: { template: html, botUuid, resend_id: result.id },
       messageIds: messageId
     })
 
@@ -118,7 +118,7 @@ export async function handleErrorReportReply(c: AppContext) {
     const currentMessageId = generateErrorReportReplyMessageId(botUuid, currentMessageSequence)
 
     const templateData = {
-      firstName: firstname,
+      firstName: firstname || "there",
       botUuid,
       resolved,
       reply,
@@ -147,7 +147,7 @@ export async function handleErrorReportReply(c: AppContext) {
       emailType: "error-report",
       triggeredBy: "system",
       subject,
-      metadata: { template: html, botUuid },
+      metadata: { template: html, botUuid, resend_id: result.id },
       messageIds: newMessageIds.join(",")
     })
 

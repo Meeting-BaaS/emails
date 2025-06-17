@@ -4,5 +4,19 @@
             "source": "/(.*)",
             "destination": "/api"
         }
+    ],
+    "crons": [
+        {
+            "path": "/cron/usage-reports?frequency=Daily",
+            "schedule": "0 10 * * *"
+        },
+        {
+            "path": "/cron/usage-reports?frequency=Weekly",
+            "schedule": "0 10 * * 1"
+        },
+        {
+            "path": "/cron/usage-reports?frequency=Monthly",
+            "schedule": "0 10 1 * *"
+        }
     ]
 }

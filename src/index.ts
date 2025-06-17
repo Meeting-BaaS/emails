@@ -7,6 +7,7 @@ import { errorHandler } from "./middlewares/error-handler"
 import { faviconHandler } from "./handlers/favicon"
 import router from "./routes"
 import accountRouter from "./routes/account"
+import cronRouter from "./routes/cron"
 
 const app = new Hono({
   strict: false
@@ -21,8 +22,10 @@ app.get("/favicon.ico", faviconHandler)
 // Request logger
 app.use("*", requestLogger)
 
-// This route is protected by the API key middleware
+// Account routes are protected by apiKeyMiddleware (inside the sub-router)
 app.route("/account", accountRouter)
+// Cron routes are protected by cronSecretMiddleware (inside the sub-router)
+app.route("/cron", cronRouter)
 
 // Auth session
 app.use("*", getAuthSession)

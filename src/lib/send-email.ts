@@ -1,4 +1,9 @@
-import { type CreateEmailResponseSuccess, Resend } from "resend"
+import {
+  type CreateBatchOptions,
+  type CreateBatchSuccessResponse,
+  type CreateEmailResponseSuccess,
+  Resend
+} from "resend"
 import { getEnvValue } from "./utils"
 import { logger } from "./logger"
 
@@ -31,6 +36,25 @@ export const sendEmail = async ({
   if (!data) {
     logger.error("No data returned from Resend")
     throw new Error("No data returned from Resend")
+  }
+
+  return data
+}
+
+export const sendBatchEmails = async (
+  emails: CreateBatchOptions
+): Promise<CreateBatchSuccessResponse> => {
+  logger.debug(`Sending batch email to ${emails.length} recipients`)
+  const { data, error } = await resend.batch.send(emails)
+
+  if (error) {
+    logger.error(`Error sending batch email: ${error.message}`)
+    throw new Error(error.message)
+  }
+
+  if (!data) {
+    logger.error("No data returned from Resend for batch email")
+    throw new Error("No data returned from Resend for batch email")
   }
 
   return data
