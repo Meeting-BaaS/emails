@@ -79,7 +79,7 @@ export async function checkSystemEmailCoolDown(
   coolDownPeriod: number
 ): Promise<CoolDownResult> {
   if (DISABLE_COOLDOWN_FOR_SYSTEM_EMAILS) {
-    logger.debug("System email cool down disabled")
+    logger.debug({ accountId, emailType }, "System email cool down disabled")
     return { canSend: true }
   }
 
@@ -100,10 +100,9 @@ export async function checkSystemEmailCoolDown(
         )
       )
       .orderBy(emailLogs.sentAt)
+      .limit(1)
 
-    const sentCount = logs.length
-
-    if (sentCount > 0) {
+    if (logs.length > 0) {
       // Use the oldest log (first in the ordered results) to calculate next available time
       const nextAvailableAt = dayjs.utc(logs[0].sentAt).add(coolDownPeriod, "hour").toISOString()
 

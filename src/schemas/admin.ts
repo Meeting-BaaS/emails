@@ -39,7 +39,7 @@ export const sendEmailSchema = z.object({
   frequency: emailFrequenciesZod,
   subject: z.string().trim().optional(),
   contentIds: z.array(z.number()).min(1, "At least one content is required"),
-  recipients: z.array(recipientsSchema)
+  recipients: z.array(recipientsSchema).min(1, "At least one recipient is required")
 })
 
 export const getEmailLogsSchema = z.object({

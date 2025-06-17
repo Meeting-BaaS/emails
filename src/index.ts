@@ -22,8 +22,9 @@ app.get("/favicon.ico", faviconHandler)
 // Request logger
 app.use("*", requestLogger)
 
-// These routes are protected by the API key middleware
+// Account routes are protected by apiKeyMiddleware (inside the sub-router)
 app.route("/account", accountRouter)
+// Cron routes are protected by cronSecretMiddleware (inside the sub-router)
 app.route("/cron", cronRouter)
 
 // Auth session

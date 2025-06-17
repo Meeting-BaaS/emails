@@ -2,7 +2,7 @@ import type { AppContext } from "../../types/context"
 import { db } from "../../lib/db"
 import { emailLogs, accounts } from "../../database/migrations/schema"
 import { logger } from "../../lib/logger"
-import { UNKNOWN_ERROR } from "../../lib/constants"
+import { EMAIL_LOGS_HARD_LIMIT, UNKNOWN_ERROR } from "../../lib/constants"
 import { desc, eq, and, lte, gte } from "drizzle-orm"
 import { getEmailLogsSchema } from "../../schemas/admin"
 import type { EmailType } from "../../types/email-types"
@@ -44,6 +44,7 @@ export async function getEmailLogs(c: AppContext) {
 
     // Compose the where clause
     const where = whereClauses.length > 0 ? and(...whereClauses) : undefined
+    const safeLimit = Math.min(limit, EMAIL_LOGS_HARD_LIMIT)
 
     // Fetch logs with pagination (+1 for hasMore)
     const logs = await db
@@ -60,11 +61,11 @@ export async function getEmailLogs(c: AppContext) {
       .innerJoin(accounts, eq(emailLogs.accountId, accounts.id))
       .where(where)
       .orderBy(desc(emailLogs.sentAt))
-      .limit(Number(limit) + 1)
-      .offset(Number(offset))
+      .limit(safeLimit + 1)
+      .offset(offset)
 
-    const hasMore = logs.length > Number(limit)
-    const data = hasMore ? logs.slice(0, Number(limit)) : logs
+    const hasMore = logs.length > safeLimit
+    const data = hasMore ? logs.slice(0, safeLimit) : logs
 
     return c.json({
       success: true,

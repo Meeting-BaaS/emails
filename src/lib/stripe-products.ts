@@ -41,21 +41,21 @@ function calculateRecordingHours(tokens: number, rate: number): number {
 }
 
 function calculatePricePerHour(tokens: number, price: number, rate: number): number {
-  if (rate > 0) {
-    const hours = tokens / rate
-    const pricePerHour = price / hours
-    return Math.round(pricePerHour * 100) / 100
+  const hours = tokens / rate
+  if (hours === 0) {
+    return 0
   }
-  return 0
+  const pricePerHour = price / hours
+  return Math.round(pricePerHour * 100) / 100
 }
 
 export function formatProductsToTokenPacks(products: StripeProductWithPrice[]): TokenPack[] {
   return products.map((product) => {
     const price = product.price.unit_amount ? product.price.unit_amount / 100 : 0
-    const tokens =
-      product.metadata.tokens && !Number.isNaN(Number(product.metadata.tokens))
-        ? Number(product.metadata.tokens)
-        : 0
+    if (!product.metadata.tokens || Number.isNaN(Number(product.metadata.tokens))) {
+      throw new Error(`Product ${product.id} is missing a valid “tokens” metadata field`)
+    }
+    const tokens = Number(product.metadata.tokens)
     const recordingRate = Number(DEFAULT_RECORDING_RATE)
     return {
       name: product.name,

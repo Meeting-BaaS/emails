@@ -80,6 +80,9 @@ async function getAllUsageStats(
       // Process meeting URLs and errors to get platform stats
       const platformStats = data.meetingUrls.reduce(
         (acc, url, index) => {
+          if (!url) {
+            return acc
+          }
           const platform = getPlatformFromUrl(url)
 
           if (platform === "unknown") {

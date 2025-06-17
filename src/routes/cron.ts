@@ -6,6 +6,6 @@ const cronRouter = createHonoApp()
 
 cronRouter.use("*", cronSecretMiddleware)
 
-cronRouter.post("/usage-reports", sendUsageReports)
+cronRouter.get("/usage-reports", sendUsageReports)
 
 export default cronRouter

@@ -27,3 +27,6 @@ export const USAGE_REPORTS_BATCH_SIZE = 80
 // Trigger usage reports cron jobs
 export const TRIGGER_USAGE_REPORTS_CRON_JOBS =
   process.env.TRIGGER_USAGE_REPORTS_CRON_JOBS === "true"
+
+// Hard limit for email logs. This is to prevent the table from growing too large.
+export const EMAIL_LOGS_HARD_LIMIT = 50000
