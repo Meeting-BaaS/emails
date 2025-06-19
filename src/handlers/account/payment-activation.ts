@@ -59,7 +59,7 @@ export async function handleSendPaymentActivationEmail(c: Context) {
     const balance = formatNumber(token_balance)
 
     const data = {
-      firstName: first_name,
+      firstName: first_name || "there",
       tokenBalance: balance,
       recordingRate: DEFAULT_RECORDING_RATE,
       transcriptionRate: DEFAULT_TRANSCRIPTION_RATE,

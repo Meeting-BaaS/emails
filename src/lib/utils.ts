@@ -156,6 +156,49 @@ export async function getUsageReportTemplate() {
   return Handlebars.compile(masterTemplate)
 }
 
+export async function getVerificationLinkTemplate() {
+  const verificationLinkContentTemplatePath = path.join(
+    templatesDir,
+    "verification-link-content.html"
+  )
+
+  // Load all templates
+  const [masterTemplate, verificationLinkContentTemplate, headerTemplate, footerTemplate] =
+    await Promise.all([
+      fs.readFile(masterTemplatePath, "utf8"),
+      fs.readFile(verificationLinkContentTemplatePath, "utf8"),
+      fs.readFile(headerTemplatePath, "utf8"),
+      fs.readFile(footerTemplatePath, "utf8")
+    ])
+
+  // Register partials
+  Handlebars.registerPartial("content", verificationLinkContentTemplate)
+  Handlebars.registerPartial("header", headerTemplate)
+  Handlebars.registerPartial("footer", footerTemplate)
+
+  return Handlebars.compile(masterTemplate)
+}
+
+export async function getResetPasswordTemplate() {
+  const resetPasswordContentTemplatePath = path.join(templatesDir, "reset-password-content.html")
+
+  // Load all templates
+  const [masterTemplate, resetPasswordContentTemplate, headerTemplate, footerTemplate] =
+    await Promise.all([
+      fs.readFile(masterTemplatePath, "utf8"),
+      fs.readFile(resetPasswordContentTemplatePath, "utf8"),
+      fs.readFile(headerTemplatePath, "utf8"),
+      fs.readFile(footerTemplatePath, "utf8")
+    ])
+
+  // Register partials
+  Handlebars.registerPartial("content", resetPasswordContentTemplate)
+  Handlebars.registerPartial("header", headerTemplate)
+  Handlebars.registerPartial("footer", footerTemplate)
+
+  return Handlebars.compile(masterTemplate)
+}
+
 /**
  * Generate a message ID for an error report email.
  * As per RFC 5322, the message ID must be unique.
