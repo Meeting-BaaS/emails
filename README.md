@@ -21,10 +21,10 @@ A robust email service built with Hono, TypeScript, and PostgreSQL, designed to 
 - **Language**: TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
 - **Email Provider**: Resend
-- **Authentication**: Custom session-based auth, API key-based authentication for backend services
+- **Authentication**: Custom session-based auth as well as API key-based authentication for backend services
 - **Package Manager**: pnpm
 - **Code Quality**: Biome for linting and formatting
-- **Templates**: Handlebars for email templating
+- **Templating Engine**: Handlebars for email templating
 
 ## Prerequisites
 
@@ -32,7 +32,7 @@ A robust email service built with Hono, TypeScript, and PostgreSQL, designed to 
 - PostgreSQL database
 - pnpm package manager
 - Resend API key
-- Stripe API key (for payment-related emails)
+- Stripe API key (`STRIPE_API_KEY`) for payment-related emails
 
 ## Installation
 
@@ -107,7 +107,7 @@ pnpm db:push     # Apply migrations to the database
 - `POST /resend` - Resend the last sent email
 
 ### Cron Jobs
-- `GET /cron/usage-reports` - Trigger usage reports cron job (protected by CRON_SECRET)
+- `GET /cron/usage-reports` - Trigger usage reports cron job (protected by CRON_SECRET). It is expected in the Authorization Header as "Bearer CRON_SECRET"
 
 ### Admin
 - `GET /admin/*` - Admin interface endpoints
@@ -115,7 +115,7 @@ pnpm db:push     # Apply migrations to the database
 ### Error Reporting
 - `POST /error-report` - Submit error reports
 
-## Cron Jobs
+## Cron Jobs Schedule
 
 The service includes automated cron jobs for usage reports:
 
@@ -123,7 +123,7 @@ The service includes automated cron jobs for usage reports:
 - **Weekly Reports**: Runs at 10:00 AM every Monday
 - **Monthly Reports**: Runs at 10:00 AM on the 1st of each month
 
-Cron jobs are configured in `vercel.json` and require the `CRON_SECRET` environment variable for authentication.
+Cron jobs are configured in `vercel.json` and require the `CRON_SECRET` environment variable for authentication. The time denotes UTC time
 
 ## Email Types
 
