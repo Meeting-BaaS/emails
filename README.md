@@ -21,9 +21,10 @@ A robust email service built with Hono, TypeScript, and PostgreSQL, designed to 
 - **Language**: TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
 - **Email Provider**: Resend
-- **Authentication**: Custom session-based auth
+- **Authentication**: Custom session-based auth, API key-based authentication for backend services
 - **Package Manager**: pnpm
 - **Code Quality**: Biome for linting and formatting
+- **Templates**: Handlebars for email templating
 
 ## Prerequisites
 
@@ -31,6 +32,7 @@ A robust email service built with Hono, TypeScript, and PostgreSQL, designed to 
 - PostgreSQL database
 - pnpm package manager
 - Resend API key
+- Stripe API key (for payment-related emails)
 
 ## Installation
 
@@ -53,7 +55,18 @@ pnpm install
 cp .env.example .env
 ```
 
-Fill in the required environment variables in `.env`. Details about the expected values for each key is documented in .env.example
+Fill in the required environment variables in `.env`. Details about the expected values for each key is documented in `.env.example`.
+
+### Required Environment Variables
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `RESEND_API_KEY`: Resend API key for email delivery
+- `RESEND_EMAIL_FROM`: Sender email address
+- `EMAIL_SERVICE_API_KEY`: API key for backend service authentication
+- `CRON_SECRET`: Secret for cron job authentication
+- `STRIPE_API_KEY`: Stripe API key for payment-related emails
+- `NEXT_PUBLIC_BASE_DOMAIN`: Base domain for external URLs
+- `NEXT_PUBLIC_SUPPORT_EMAIL`: Support email address
 
 4. Set up the database:
 
@@ -74,6 +87,13 @@ pnpm db:push     # Apply migrations to the database
 
 ## API Endpoints
 
+### Account Management
+- `POST /account/verification-email` - Send verification link email
+- `POST /account/password-reset-email` - Send password reset email
+- `POST /account/insufficient-tokens` - Send insufficient tokens notification
+- `POST /account/payment-activation` - Send payment activation email
+- `POST /account/default-preferences` - Save default email preferences
+
 ### Email Types
 - `GET /types` - List available email types
 - `POST /types` - Create new email type
@@ -86,28 +106,56 @@ pnpm db:push     # Apply migrations to the database
 ### Email Sending
 - `POST /resend` - Resend the last sent email
 
+### Cron Jobs
+- `GET /cron/usage-reports` - Trigger usage reports cron job (protected by CRON_SECRET)
+
 ### Admin
 - `GET /admin/*` - Admin interface endpoints
 
 ### Error Reporting
 - `POST /error-report` - Submit error reports
 
-## Database Schema
+## Cron Jobs
 
-The service uses several key tables:
-- `email_logs` - Tracks all sent emails
-- `email_preferences` - User preferences for email types
-- `email_content` - Email templates and content
-- `accounts` - User account information
-- `sessions` - User session management
+The service includes automated cron jobs for usage reports:
+
+- **Daily Reports**: Runs at 10:00 AM daily
+- **Weekly Reports**: Runs at 10:00 AM every Monday
+- **Monthly Reports**: Runs at 10:00 AM on the 1st of each month
+
+Cron jobs are configured in `vercel.json` and require the `CRON_SECRET` environment variable for authentication.
+
+## Email Types
+
+The service supports various email types organized by domain:
+
+### Reports Domain
+- `usage-reports` - Automated usage statistics
+- `activity-updates` - User activity notifications
+
+### Announcements Domain
+- `product-updates` - Product feature updates
+- `maintenance` - System maintenance notifications
+- `company-news` - Company announcements
+
+### Developers Domain
+- `api-changes` - API change notifications
+- `developer-resources` - Developer-focused content
+- `security` - Security-related announcements
+
+### Account Domain
+- `billing` - Billing and payment notifications
+- `insufficient_tokens_recording` - Token balance alerts
+- `payment_activation` - Payment method activation
 
 ## Security
 
-- Implements security headers middleware
-- Session-based authentication
-- Request logging
-- Error handling middleware
-- Input validation using Zod
+- **API Key Authentication**: Backend routes protected with `EMAIL_SERVICE_API_KEY`
+- **Cron Secret**: Cron endpoints protected with `CRON_SECRET`
+- **Security Headers**: Implements comprehensive security headers middleware
+- **Request Logging**: Detailed request and error logging
+- **Input Validation**: Zod-based request validation
+- **Rate Limiting**: Configurable cooldown periods for email resending
 
 ## Development
 
@@ -127,7 +175,11 @@ pnpm db:studio
 
 ## Deployment
 
-The service is configured for deployment on Vercel. The `vercel.json` file contains the necessary configuration.
+The service is configured for deployment on Vercel. The `vercel.json` file contains the necessary configuration including cron job schedules.
+
+### Environment Configuration
+
+For production deployment, ensure all required environment variables are set in your Vercel project settings.
 
 ## Contributing
 
