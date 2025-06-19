@@ -213,7 +213,7 @@ export async function sendUsageReports(c: Context) {
     // Get master template
     const template = await getUsageReportTemplate()
     const from = getEnvValue("RESEND_EMAIL_FROM")
-    const emailSubject = getSubject(frequency, startDate, endDate)
+    const emailSubject = getSubject({ frequency, startDate, endDate })
     const templateBaseData = {
       durationString: getDurationString(frequency, startDate, endDate),
       supportEmail: SUPPORT_EMAIL,

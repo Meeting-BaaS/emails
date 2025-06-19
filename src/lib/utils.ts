@@ -222,13 +222,11 @@ export const getPlatformFromUrl = (url: string): PlatformName => {
 
 // Get the duration string for the usage report
 export const getDurationString = (frequency: EmailFrequency, startDate: Date, endDate: Date) => {
-  const startDateString = dayjs(startDate).format("D MMM YYYY")
-  const endDateString = dayjs(endDate).format("D MMM YYYY")
   switch (frequency) {
     case "Daily":
-      return `for yesterday, ${startDateString}`
+      return `for yesterday, ${dayjs(startDate).format("MMM D, YYYY")}`
     case "Weekly":
-      return `from ${startDateString} to ${endDateString}`
+      return `from ${dayjs(startDate).format("D MMM YYYY")} to ${dayjs(endDate).format("D MMM YYYY")}`
     case "Monthly":
       return `for the month of ${dayjs(startDate).format("MMMM YYYY")}`
     default:
@@ -236,18 +234,25 @@ export const getDurationString = (frequency: EmailFrequency, startDate: Date, en
   }
 }
 
+interface GetSubjectParams {
+  frequency: EmailFrequency
+  subjectPrefix?: string
+  startDate: Date
+  endDate: Date
+}
+
 // Get the subject for the usage report
-export const getSubject = (frequency: EmailFrequency, startDate: Date, endDate: Date) => {
-  const subjectPrefix = `${frequency} Usage Report •`
+export const getSubject = ({ frequency, subjectPrefix, startDate, endDate }: GetSubjectParams) => {
+  const prefix = subjectPrefix || `${frequency} Usage Report •`
   const startDateString = dayjs(startDate).format("D MMM YYYY")
   const endDateString = dayjs(endDate).format("D MMM YYYY")
   switch (frequency) {
     case "Daily":
-      return `${subjectPrefix} ${startDateString}`
+      return `${prefix} ${startDateString}`
     case "Weekly":
-      return `${subjectPrefix} ${startDateString} - ${endDateString}`
+      return `${prefix} ${startDateString} - ${endDateString}`
     case "Monthly":
-      return `${subjectPrefix} ${dayjs(startDate).format("MMMM YYYY")}`
+      return `${prefix} ${dayjs(startDate).format("MMMM YYYY")}`
     default:
       return ""
   }

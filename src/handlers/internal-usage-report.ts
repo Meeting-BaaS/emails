@@ -10,6 +10,7 @@ import {
   getDuration,
   getDurationString,
   getEnvValue,
+  getSubject,
   getUsageReportTemplate
 } from "../lib/utils"
 import type { CreateBatchOptions } from "resend"
@@ -130,9 +131,7 @@ export async function sendInternalUsageReports(c: Context) {
 
     const from = getEnvValue("RESEND_EMAIL_FROM")
     const subjectPrefix = "Meeting BaaS Usage Report •"
-    const startDateString = dayjs(startDate).format("D MMM YYYY")
-    const endDateString = dayjs(endDate).format("D MMM YYYY")
-    const emailSubject = `${subjectPrefix} ${startDateString} - ${endDateString}`
+    const emailSubject = getSubject({ frequency, startDate, endDate, subjectPrefix })
 
     const templateBaseData = {
       durationString: getDurationString(frequency, startDate, endDate),
