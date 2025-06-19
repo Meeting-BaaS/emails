@@ -226,7 +226,7 @@ export const getDurationString = (frequency: EmailFrequency, startDate: Date, en
   const endDateString = dayjs(endDate).format("D MMM YYYY")
   switch (frequency) {
     case "Daily":
-      return `for today, ${startDateString}`
+      return `for yesterday, ${startDateString}`
     case "Weekly":
       return `from ${startDateString} to ${endDateString}`
     case "Monthly":

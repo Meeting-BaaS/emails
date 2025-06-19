@@ -23,58 +23,18 @@ import {
 import type { CreateBatchOptions } from "resend"
 import { ANALYTICS_URL, USAGE_URL } from "../lib/external-urls"
 import type { Context } from "hono"
-import type { UserStats } from "../types/usage-reports"
+import type { BotsData, UserStats } from "../types/usage-reports"
 import type { EmailFrequency, EmailType } from "../types/email-types"
 import { emailFrequenciesZod } from "../schemas/preferences"
 import { z } from "zod"
 
 /**
- * Get usage statistics for all subscribers
- * @param startDate - Start date for the stats
- * @param endDate - End date for the stats
- * @param accountIds - Array of account IDs to filter by
+ * Format usage stats
+ * @param botsData - Bots data
  * @returns Map of account IDs to their usage statistics
  */
-async function getAllUsageStats(
-  startDate: Date,
-  endDate: Date,
-  accountIds: number[]
-): Promise<Map<number, UserStats>> {
-  // Get all bots and their consumption data for the date range
-  const botsData = await db
-    .select({
-      accountId: bots.accountId,
-      totalBots: count(bots.id),
-      avgLength: sql<number>`AVG(EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt}))) / 3600`,
-      // Hours
-      totalHours: sql<number>`SUM(EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt}))) / 3600`,
-      // Tokens
-      recordingTokens: sql<number>`COALESCE(SUM(${botConsumption.recordingTokens}), 0)`,
-      transcriptionTokens: sql<number>`COALESCE(SUM(${botConsumption.transcriptionTokens} + ${botConsumption.transcriptionByokTokens} + ${botConsumption.streamingOutputTokens} + ${botConsumption.streamingInputTokens}), 0)`,
-      // Error coount
-      errorCount: sql<number>`COUNT(CASE WHEN ${bots.errors} IS NOT NULL THEN 1 END)`,
-      totalCount: count(bots.id),
-      // Get meeting URLs and errors for platform detection, ordered by creation time
-      meetingUrls: sql<string[]>`array_agg(${bots.meetingUrl} ORDER BY ${bots.createdAt})`,
-      errors: sql<string[]>`array_agg(${bots.errors} ORDER BY ${bots.createdAt})`
-    })
-    .from(bots)
-    .leftJoin(botConsumption, eq(bots.id, botConsumption.botId))
-    .where(
-      and(
-        inArray(bots.accountId, accountIds),
-        isNotNull(bots.endedAt), // Bot must have ended
-        gte(bots.endedAt, startDate.toISOString()),
-        lte(bots.endedAt, endDate.toISOString()),
-        sql`EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt})) > 0`, // Bot must have run for at least 1 second
-        sql`EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt})) <= 15000`, // Bot must have run for less than 15000 seconds (4 hours)
-        sql`(${bots.errors} IS NULL OR ${bots.errors} NOT LIKE '%Internal%')` // Bot must not have internal errors
-      )
-    )
-    .groupBy(bots.accountId)
-
-  logger.info(`Found ${botsData.length} bots for ${accountIds.length} accounts`)
-
+export async function formatUsageStats(botsData: BotsData[]): Promise<Map<number, UserStats>> {
+  logger.info(`Formatting usage stats for ${botsData.length} bots`)
   // Process data asynchronously using Promise.all
   const userStatsEntries = await Promise.all(
     botsData.map(async (data) => {
@@ -109,9 +69,9 @@ async function getAllUsageStats(
       )
 
       return [
-        data.accountId,
+        data.accountId ?? 0,
         {
-          accountId: data.accountId,
+          accountId: data.accountId ?? 0,
           totalBots: Number(data.totalBots),
           avgLength: Number(data.avgLength),
           platformStats,
@@ -130,6 +90,57 @@ async function getAllUsageStats(
   )
 
   return new Map(userStatsEntries)
+}
+
+/**
+ * Get usage statistics for all subscribers
+ * @param startDate - Start date for the stats
+ * @param endDate - End date for the stats
+ * @param accountIds - Array of account IDs to filter by
+ * @returns Map of account IDs to their usage statistics
+ */
+async function getAllUsageStats(
+  startDate: Date,
+  endDate: Date,
+  accountIds: number[]
+): Promise<Map<number, UserStats>> {
+  // Get all bots and their consumption data for the date range
+  const botsData = await db
+    .select({
+      accountId: bots.accountId,
+      totalBots: count(bots.id),
+      avgLength: sql<number>`AVG(EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt}))) / 3600`,
+      // Hours
+      totalHours: sql<number>`SUM(EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt}))) / 3600`,
+      // Tokens
+      recordingTokens: sql<number>`COALESCE(SUM(${botConsumption.recordingTokens}), 0)`,
+      transcriptionTokens: sql<number>`COALESCE(SUM(${botConsumption.transcriptionTokens} + ${botConsumption.transcriptionByokTokens} + ${botConsumption.streamingOutputTokens} + ${botConsumption.streamingInputTokens}), 0)`,
+      // Error count
+      errorCount: sql<number>`COUNT(CASE WHEN ${bots.errors} IS NOT NULL THEN 1 END)`,
+      totalCount: count(bots.id),
+      // Get meeting URLs and errors for platform detection, ordered by creation time
+      meetingUrls: sql<string[]>`array_agg(${bots.meetingUrl} ORDER BY ${bots.createdAt})`,
+      errors: sql<string[]>`array_agg(${bots.errors} ORDER BY ${bots.createdAt})`
+    })
+    .from(bots)
+    .leftJoin(botConsumption, eq(bots.id, botConsumption.botId))
+    .where(
+      and(
+        inArray(bots.accountId, accountIds),
+        isNotNull(bots.endedAt), // Bot must have ended
+        gte(bots.endedAt, startDate.toISOString()),
+        lte(bots.endedAt, endDate.toISOString()),
+        sql`EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt})) > 0`, // Bot must have run for at least 1 second
+        sql`EXTRACT(EPOCH FROM (${bots.endedAt} - ${bots.createdAt})) <= 15000`, // Bot must have run for less than 15000 seconds (4 hours)
+        sql`(${bots.errors} IS NULL OR ${bots.errors} NOT LIKE '%Internal%')` // Bot must not have internal errors
+      )
+    )
+    .groupBy(bots.accountId)
+
+  logger.info(`Found ${botsData.length} bots for ${accountIds.length} accounts`)
+
+  const userStatsEntries = await formatUsageStats(botsData)
+  return userStatsEntries
 }
 
 /**

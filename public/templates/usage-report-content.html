@@ -5,11 +5,20 @@
         <tr style="width:100%">
             <td>
                 <p class="greeting-text">Hi {{firstName}},</p>
+                {{#if internalReport}}
+                <p class="main-content">Here's the usage overview for all users of Meeting BaaS {{durationString}}.</p>
+                <p class="main-content">A total of <span class="highlight-value">{{totalBots}}</span> bots were sent
+                    out, for a
+                    total of <span class="highlight-value">{{totalHours}}</span> hours and <span
+                        class="highlight-value">{{totalTokens}}</span> tokens. According to our internal calculations,
+                    these bots had a <span class="error-rate">{{errorRate}}%</span> error rate.</p>
+                {{else}}
                 <p class="main-content">Here's your usage overview for Meeting BaaS {{durationString}}.</p>
                 <p class="main-content">You sent out <span class="highlight-value">{{totalBots}}</span> bots, for a
                     total of <span class="highlight-value">{{totalHours}}</span> hours and <span
                         class="highlight-value">{{totalTokens}}</span> tokens. According to our internal calculations,
                     these bots had a <span class="error-rate">{{errorRate}}%</span> error rate.</p>
+                {{/if}}
                 <p class="main-content">Read on below for more.</p>
             </td>
         </tr>
