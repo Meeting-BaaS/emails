@@ -43,7 +43,7 @@ export const sendEmail = async ({
 
 export const sendBatchEmails = async (
   emails: CreateBatchOptions
-): Promise<CreateBatchSuccessResponse> => {
+): Promise<CreateBatchSuccessResponse["data"]> => {
   logger.debug(`Sending batch email to ${emails.length} recipients`)
   const { data, error } = await resend.batch.send(emails)
 
@@ -57,7 +57,7 @@ export const sendBatchEmails = async (
     throw new Error("No data returned from Resend for batch email")
   }
 
-  return data
+  return data.data
 }
 
 interface SendErrorReportEmailOptions {

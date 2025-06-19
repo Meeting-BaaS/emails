@@ -20,7 +20,7 @@ import {
   getUnsubscribeLink,
   getUsageReportTemplate
 } from "../lib/utils"
-import type { CreateBatchOptions } from "resend"
+import type { CreateBatchOptions, CreateBatchSuccessResponse } from "resend"
 import { ANALYTICS_URL, USAGE_URL } from "../lib/external-urls"
 import type { Context } from "hono"
 import type { BotsData, UserStats } from "../types/usage-reports"
@@ -226,6 +226,7 @@ export async function sendUsageReports(c: Context) {
     // Prepare email batches
     const batches: CreateBatchOptions[] = []
     let currentBatch: CreateBatchOptions = []
+    const allResendIds: CreateBatchSuccessResponse["data"] = []
     const emailLogs: LogEmailParams[] = []
 
     // Process each account's stats
@@ -302,15 +303,16 @@ export async function sendUsageReports(c: Context) {
     for (const batch of batches) {
       batchIndex++
       logger.info(`Sending batch ${batchIndex} of ${batches.length}`)
-      await sendBatchEmails(batch)
+      const resendIds = await sendBatchEmails(batch)
       logger.info(`Batch ${batchIndex} sent successfully`)
+      allResendIds.push(...resendIds)
       // Wait for 1 second to avoid rate limiting from Resend
       await new Promise((resolve) => setTimeout(resolve, EMAIL_BATCH_DELAY_MS))
     }
 
     logger.info(`Inserting ${emailLogs.length} email logs`)
     if (emailLogs.length > 0) {
-      await logBatchEmailSend(emailLogs)
+      await logBatchEmailSend(emailLogs, allResendIds)
     }
 
     logger.info(`Cron job completed successfully for ${subscribers.length} subscribers`)

@@ -16,7 +16,7 @@ import type { CreateBatchOptions } from "resend"
 import { ANALYTICS_URL, USAGE_URL } from "../lib/external-urls"
 import type { Context } from "hono"
 import type { UserStats } from "../types/usage-reports"
-import type { EmailType } from "../types/email-types"
+import type { EmailFrequency, EmailType } from "../types/email-types"
 import { formatUsageStats } from "./usage-reports"
 import dayjs from "dayjs"
 
@@ -77,7 +77,8 @@ async function getUsageStatsForAllUsers(
  */
 export async function sendInternalUsageReports(c: Context) {
   try {
-    const frequency = "Daily" as const
+    const frequency: EmailFrequency =
+      (process.env.INTERNAL_USAGE_REPORT_FREQUENCY as EmailFrequency) || "Daily"
     const emailTypeId: EmailType["id"] = "usage-reports"
     const duration = getDuration(frequency)
 
@@ -194,11 +195,11 @@ export async function sendInternalUsageReports(c: Context) {
 
     logger.info(`Sending ${emails.length} emails`)
 
-    await sendBatchEmails(emails)
+    const allResendIds = await sendBatchEmails(emails)
 
     logger.info(`Inserting ${emailLogs.length} email logs`)
 
-    await logBatchEmailSend(emailLogs)
+    await logBatchEmailSend(emailLogs, allResendIds)
 
     logger.info(`Cron job completed successfully for ${users.length} users`)
     return c.json(

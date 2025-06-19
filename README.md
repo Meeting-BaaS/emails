@@ -112,12 +112,17 @@ pnpm db:push     # Apply migrations to the database
 
 ### Cron Jobs
 
-- `GET /cron/usage-reports` - Trigger usage reports cron job (protected by CRON_SECRET). It is expected in the Authorization Header as "Bearer CRON_SECRET"
+- `GET /cron/usage-reports` - Trigger usage reports cron job 
+- `GET /cron/internal-usage-reports` - Trigger internal usage reports cron job
+
+These jobs are Protected by CRON_SECRET. It is expected in the Authorization Header as "Bearer CRON_SECRET"
 
 ### Admin
+
 - `GET /admin/*` - Admin interface endpoints
 
 ### Error Reporting
+
 - `POST /error-report` - Submit error reports
 
 ## Cron Jobs Schedule
@@ -135,10 +140,12 @@ Cron jobs are configured in `vercel.json` and require the `CRON_SECRET` environm
 The service supports various email types organized by domain:
 
 ### Reports Domain
+
 - `usage-reports` - Automated usage statistics
 - `activity-updates` - User activity notifications
 
 ### Announcements Domain
+
 - `product-updates` - Product feature updates
 - `maintenance` - System maintenance notifications
 - `company-news` - Company announcements
