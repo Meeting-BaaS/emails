@@ -85,7 +85,7 @@ export async function logBatchEmailSend(
         ...email,
         metadata: {
           ...email.metadata,
-          resend_id: resendIds[index].id || "unknown"
+          resend_id: resendIds[index]?.id || "unknown"
         },
         sentAt: currentDateUTC()
       }))

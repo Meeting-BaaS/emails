@@ -150,17 +150,25 @@ export async function sendInternalUsageReports(c: Context) {
       avgLength: formatNumber(stats.avgLength),
       googleMeet: stats.platformStats.googleMeet.value,
       googleMeetPercentage: formatNumber(
-        (stats.platformStats.googleMeet.value / stats.totalBots) * 100
+        stats.totalBots > 0 ? (stats.platformStats.googleMeet.value / stats.totalBots) * 100 : 0
       ),
       googleMeetSuccess: formatNumber(
-        (stats.platformStats.googleMeet.success / stats.totalBots) * 100
+        stats.totalBots > 0 ? (stats.platformStats.googleMeet.success / stats.totalBots) * 100 : 0
       ),
       zoom: stats.platformStats.zoom.value,
-      zoomPercentage: formatNumber((stats.platformStats.zoom.value / stats.totalBots) * 100),
-      zoomSuccess: formatNumber((stats.platformStats.zoom.success / stats.totalBots) * 100),
+      zoomPercentage: formatNumber(
+        stats.totalBots > 0 ? (stats.platformStats.zoom.value / stats.totalBots) * 100 : 0
+      ),
+      zoomSuccess: formatNumber(
+        stats.totalBots > 0 ? (stats.platformStats.zoom.success / stats.totalBots) * 100 : 0
+      ),
       teams: stats.platformStats.teams.value,
-      teamsPercentage: formatNumber((stats.platformStats.teams.value / stats.totalBots) * 100),
-      teamsSuccess: formatNumber((stats.platformStats.teams.success / stats.totalBots) * 100),
+      teamsPercentage: formatNumber(
+        stats.totalBots > 0 ? (stats.platformStats.teams.value / stats.totalBots) * 100 : 0
+      ),
+      teamsSuccess: formatNumber(
+        stats.totalBots > 0 ? (stats.platformStats.teams.success / stats.totalBots) * 100 : 0
+      ),
       recordingHours: formatNumber(stats.hours.recording),
       transcriptionHours: formatNumber(stats.hours.transcription),
       recordingTokens: formatNumber(stats.tokens.recording),
