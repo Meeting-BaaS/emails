@@ -88,6 +88,7 @@ pnpm db:push     # Apply migrations to the database
 ## API Endpoints
 
 ### Account Management
+
 - `POST /account/verification-email` - Send verification link email
 - `POST /account/password-reset-email` - Send password reset email
 - `POST /account/insufficient-tokens` - Send insufficient tokens notification
@@ -95,18 +96,22 @@ pnpm db:push     # Apply migrations to the database
 - `POST /account/default-preferences` - Save default email preferences
 
 ### Email Types
+
 - `GET /types` - List available email types
 - `POST /types` - Create new email type
 
 ### Email Preferences
+
 - `GET /preferences` - Get user email preferences
 - `POST /preferences` - Update user email preferences
 - `GET /default-preferences` - Get default email preferences
 
 ### Email Sending
+
 - `POST /resend` - Resend the last sent email
 
 ### Cron Jobs
+
 - `GET /cron/usage-reports` - Trigger usage reports cron job (protected by CRON_SECRET). It is expected in the Authorization Header as "Bearer CRON_SECRET"
 
 ### Admin
