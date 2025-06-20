@@ -14,10 +14,21 @@ export const webhookMiddleware = async (c: Context, next: Next) => {
   const wh = new Webhook(WEBHOOK_SECRET)
 
   logger.debug("verifying webhook signature")
+  const headers: Record<string, string> = {}
+  c.req.raw.headers.forEach((value, key) => {
+    headers[key] = value
+  })
+  const body = await c.req.raw.clone().text()
 
-  if (
-    wh.verify(c.req.raw.body?.toString() ?? "", Object.fromEntries(c.req.raw.headers.entries()))
-  ) {
+  let verified = false
+
+  try {
+    verified = Boolean(wh.verify(body, headers))
+  } catch (error) {
+    logger.error("Error verifying webhook signature", { error })
+  }
+
+  if (verified) {
     logger.debug("Webhook signature verified")
     return next()
   }
