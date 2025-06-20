@@ -27,7 +27,7 @@ app.use("*", requestLogger)
 app.route("/account", accountRouter)
 // Cron routes are protected by cronSecretMiddleware (inside the sub-router)
 app.route("/cron", cronRouter)
-// Webhook routes are protected by apiKeyMiddleware (inside the sub-router)
+// Webhook routes are protected by webhookMiddleware (inside the sub-router)
 app.route("/webhook", webhookRouter)
 
 // Auth session

@@ -1,4 +1,4 @@
-export type EmailType =
+export type WebhookType =
   | "email.sent"
   | "email.delivered"
   | "email.delivery_delayed"
@@ -16,5 +16,5 @@ export interface WebhookEvent {
     subject: string
     to: string[]
   }
-  type: EmailType
+  type: WebhookType
 }
