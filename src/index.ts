@@ -8,6 +8,7 @@ import { faviconHandler } from "./handlers/favicon"
 import router from "./routes"
 import accountRouter from "./routes/account"
 import cronRouter from "./routes/cron"
+import webhookRouter from "./routes/webhook"
 
 const app = new Hono({
   strict: false
@@ -26,6 +27,8 @@ app.use("*", requestLogger)
 app.route("/account", accountRouter)
 // Cron routes are protected by cronSecretMiddleware (inside the sub-router)
 app.route("/cron", cronRouter)
+// Webhook routes are protected by webhookMiddleware (inside the sub-router)
+app.route("/webhook", webhookRouter)
 
 // Auth session
 app.use("*", getAuthSession)
