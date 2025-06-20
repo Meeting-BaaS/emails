@@ -15,13 +15,14 @@ export async function handleEmailStatusWebhook(c: Context) {
     const {
       type,
       created_at,
-      data: { email_id, created_at: data_created_at }
+      data: { email_id, created_at: data_created_at, click }
     } = parsedBody
 
     const webhookEventData = {
       type,
       created_at,
-      data_created_at
+      data_created_at,
+      ...(click && { clicked_link: click.link })
     }
     // Update the email log with the webhook event type
     // We're looking for records where metadata->>'resend_id' equals the email_id from the webhook

@@ -16,6 +16,11 @@ export const emailStatusSchema = z.object({
   created_at: z.string(),
   data: z.object({
     email_id: z.string(),
-    created_at: z.string()
+    created_at: z.string(),
+    click: z
+      .object({
+        link: z.string()
+      })
+      .optional()
   })
 })
