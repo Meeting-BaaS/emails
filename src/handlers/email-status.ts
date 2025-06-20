@@ -1,6 +1,5 @@
 import type { Context } from "hono"
 import { logger } from "../lib/logger"
-import type { WebhookEvent } from "../types/webhook"
 import { db } from "../lib/db"
 import { emailLogs } from "../database/migrations/schema"
 import { sql } from "drizzle-orm"
@@ -9,9 +8,8 @@ import { emailStatusSchema } from "../schemas/webhook"
 import { z } from "zod"
 
 export async function handleEmailStatusWebhook(c: Context) {
-  const body: WebhookEvent = await c.req.json()
-
   try {
+    const body = await c.req.json()
     const parsedBody = emailStatusSchema.parse(body)
 
     const {
@@ -72,9 +70,7 @@ export async function handleEmailStatusWebhook(c: Context) {
     }
     logger.error(
       {
-        error,
-        emailId: body.data.email_id,
-        webhookType: body.type
+        error
       },
       "Failed to update email logs with webhook event"
     )

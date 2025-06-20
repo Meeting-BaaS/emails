@@ -3,7 +3,7 @@ import { db } from "../../lib/db"
 import { emailLogs, accounts } from "../../database/migrations/schema"
 import { logger } from "../../lib/logger"
 import { EMAIL_LOGS_HARD_LIMIT, UNKNOWN_ERROR } from "../../lib/constants"
-import { desc, eq, and, lte, gte } from "drizzle-orm"
+import { desc, eq, and, lte, gte, sql } from "drizzle-orm"
 import { getEmailLogsSchema } from "../../schemas/admin"
 import type { EmailType } from "../../types/email-types"
 import { z } from "zod"
@@ -55,7 +55,8 @@ export async function getEmailLogs(c: AppContext) {
         subject: emailLogs.subject,
         triggeredBy: emailLogs.triggeredBy,
         email: accounts.email,
-        fullName: accounts.fullName
+        fullName: accounts.fullName,
+        webhookEvents: sql<unknown>`${emailLogs.metadata}->'webhook_events'`
       })
       .from(emailLogs)
       .innerJoin(accounts, eq(emailLogs.accountId, accounts.id))
