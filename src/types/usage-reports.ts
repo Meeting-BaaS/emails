@@ -1,5 +1,18 @@
 export type PlatformName = "googleMeet" | "zoom" | "teams" | "unknown"
 
+export type BotsData = {
+  meetingUrls: string[]
+  errors: string[]
+  totalBots: number
+  avgLength: number
+  totalHours: number
+  recordingTokens: number
+  transcriptionTokens: number
+  errorCount: number
+  totalCount: number
+  accountId?: number
+}
+
 export type UserStats = {
   accountId: number
   totalBots: number

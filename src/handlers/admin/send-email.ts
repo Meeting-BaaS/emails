@@ -125,9 +125,9 @@ export async function handleSendEmail(c: AppContext) {
       })
     }
 
-    await sendBatchEmails(emails)
+    const resendIds = await sendBatchEmails(emails)
 
-    await logBatchEmailSend(emailLogs)
+    await logBatchEmailSend(emailLogs, resendIds)
 
     return c.json({ success: true, message: `${emailSubject} email sent` })
   } catch (error) {

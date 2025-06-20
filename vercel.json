@@ -17,6 +17,10 @@
         {
             "path": "/cron/usage-reports?frequency=Monthly",
             "schedule": "0 10 1 * *"
+        },
+        {
+            "path": "/cron/internal-usage-reports",
+            "schedule": "0 9 * * *"
         }
     ]
 }

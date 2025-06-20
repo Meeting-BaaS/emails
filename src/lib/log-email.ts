@@ -3,6 +3,7 @@ import { emailLogs } from "../database/migrations/schema"
 import { logger } from "./logger"
 import { currentDateUTC } from "./utils"
 import type { EmailType } from "../types/email-types"
+import type { CreateBatchSuccessResponse } from "resend"
 
 export interface LogEmailParams {
   accountId: number
@@ -74,11 +75,18 @@ export async function logEmailSend({
   }
 }
 
-export async function logBatchEmailSend(emails: LogEmailParams[]) {
+export async function logBatchEmailSend(
+  emails: LogEmailParams[],
+  resendIds: CreateBatchSuccessResponse["data"]
+) {
   try {
     await db.insert(emailLogs).values(
-      emails.map((email) => ({
+      emails.map((email, index) => ({
         ...email,
+        metadata: {
+          ...email.metadata,
+          resend_id: resendIds[index]?.id || "unknown"
+        },
         sentAt: currentDateUTC()
       }))
     )

@@ -65,7 +65,7 @@ export async function handleSendInsufficientTokensEmail(c: Context) {
     const template = await getInsufficientTokensTemplate()
 
     const data = {
-      firstName: first_name,
+      firstName: first_name || "there",
       availableTokens: available,
       requiredTokens: required,
       tokenPacks,
