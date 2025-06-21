@@ -224,7 +224,7 @@ export const getPlatformFromUrl = (url: string): PlatformName => {
 export const getDurationString = (frequency: EmailFrequency, startDate: Date, endDate: Date) => {
   switch (frequency) {
     case "Daily":
-      return `for yesterday, ${dayjs(startDate).format("MMM D, YYYY")}`
+      return `for yesterday, ${dayjs(startDate).format("MMMM D, YYYY")}`
     case "Weekly":
       return `from ${dayjs(startDate).format("D MMM YYYY")} to ${dayjs(endDate).format("D MMM YYYY")}`
     case "Monthly":
