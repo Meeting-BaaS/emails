@@ -1,6 +1,6 @@
-import { z } from "zod"
-import { emailIdsZod, emailFrequenciesZod } from "./preferences"
 import dayjs from "dayjs"
+import { z } from "zod"
+import { emailFrequenciesZod, emailIdsZod } from "./preferences"
 
 export const getRecipientsSchema = z.object({
   emailId: emailIdsZod,
@@ -30,8 +30,8 @@ export const deleteContentSchema = z.object({
 
 export const recipientsSchema = z.object({
   email: z.string().email("Invalid email address"),
-  firstname: z.string().optional(),
-  lastname: z.string().optional()
+  firstname: z.string().nullable().default(""),
+  lastname: z.string().nullable().default("")
 })
 
 export const sendEmailSchema = z.object({
