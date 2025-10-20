@@ -4,8 +4,8 @@ import {
   type CreateEmailResponseSuccess,
   Resend
 } from "resend"
-import { getEnvValue } from "./utils"
 import { logger } from "./logger"
+import { getEnvValue } from "./utils"
 
 const resend = new Resend(getEnvValue("RESEND_API_KEY"))
 
@@ -13,19 +13,22 @@ interface SendEmailOptions {
   to: string
   subject: string
   html: string
+  cc?: string | string[]
 }
 
 export const sendEmail = async ({
   to,
   subject,
-  html
+  html,
+  cc
 }: SendEmailOptions): Promise<CreateEmailResponseSuccess> => {
   logger.debug(`Sending email to ${to} with subject ${subject}`)
   const { data, error } = await resend.emails.send({
     from: getEnvValue("RESEND_EMAIL_FROM"),
     to,
     subject,
-    html
+    html,
+    cc
   })
 
   if (error) {

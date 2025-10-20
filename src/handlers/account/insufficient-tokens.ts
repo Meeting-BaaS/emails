@@ -1,6 +1,6 @@
 import type { Context } from "hono"
-import { sendInsufficientTokensEmailSchema } from "../../schemas/account"
-import { logger } from "../../lib/logger"
+import { z } from "zod"
+import { checkSystemEmailCoolDown } from "../../lib/check-cooldown"
 import {
   DEFAULT_RECORDING_RATE,
   DEFAULT_STREAMING_OUTPUT_RATE,
@@ -10,15 +10,15 @@ import {
   SYSTEM_MESSAGE,
   UNKNOWN_ERROR
 } from "../../lib/constants"
-import { z } from "zod"
-import { formatNumber, getInsufficientTokensTemplate, getUnsubscribeLink } from "../../lib/utils"
-import { sendEmail } from "../../lib/send-email"
-import { logEmailSend } from "../../lib/log-email"
-import type { EmailType } from "../../types/email-types"
 import { BILLING_URL } from "../../lib/external-urls"
-import { fetchAllProducts, formatProductsToTokenPacks } from "../../lib/stripe-products"
-import { checkSystemEmailCoolDown } from "../../lib/check-cooldown"
 import { isUnsubscribed } from "../../lib/is-unsubscribed"
+import { logEmailSend } from "../../lib/log-email"
+import { logger } from "../../lib/logger"
+import { sendEmail } from "../../lib/send-email"
+import { fetchAllProducts, formatProductsToTokenPacks } from "../../lib/stripe-products"
+import { formatNumber, getInsufficientTokensTemplate, getUnsubscribeLink } from "../../lib/utils"
+import { sendInsufficientTokensEmailSchema } from "../../schemas/account"
+import type { EmailType } from "../../types/email-types"
 
 export async function handleSendInsufficientTokensEmail(c: Context) {
   try {
@@ -84,7 +84,10 @@ export async function handleSendInsufficientTokensEmail(c: Context) {
     const result = await sendEmail({
       to: email,
       subject: "Recording Failed: Insufficient Token Balance",
-      html
+      html,
+      cc: email.toLowerCase().includes("subscription.account@fairwai.com")
+        ? "mike@fairwai.com"
+        : undefined
     })
 
     await logEmailSend({
